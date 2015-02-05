@@ -68,6 +68,7 @@ then
 fi
 
 
+
 # Install essential packages from Apt
 ./vagrant_data/apt.postgresql.org.sh
 apt-get update -y
@@ -79,7 +80,7 @@ apt-get install -y build-essential python-software-properties python-pip
 # supporting: jpeg, tiff, png, freetype, littlecms
 apt-get install -y libjpeg-dev libtiff-dev zlib1g-dev libfreetype6-dev liblcms2-dev
 # Git (we'd rather avoid people keeping credentials for git commits in the repo, but sometimes we need it for pip requirements that aren't in PyPI)
-apt-get install -y git
+apt-get install -y git elasticsearch
 
 # install all versions of Python for testing.
 add-apt-repository -y ppa:fkrull/deadsnakes
@@ -88,7 +89,7 @@ apt-get install -qq python2.7 python2.7-dev python3.3 python3.3-dev
 # Postgresql
 
 
-apt-get -y install "postgresql-$PG_VERSION" "postgresql-contrib-$PG_VERSION"
+apt-get -y install "postgresql-$PG_VERSION" "postgresql-contrib-$PG_VERSION" libpq-dev
 
 PG_CONF="/etc/postgresql/$PG_VERSION/main/postgresql.conf"
 PG_HBA="/etc/postgresql/$PG_VERSION/main/pg_hba.conf"
@@ -122,6 +123,22 @@ EOF
 date > "$PROVISIONED_ON"
 
 
+# install java
+sudo apt-get install openjdk-7-jre-headless -y
+
+
+# install elasticsearch
+wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.2.deb
+sudo dpkg -i elasticsearch-1.4.2.deb
+
+# Configure Elasticsearch to automatically start during bootup :
+update-rc.d elasticsearch defaults 95 10
+sudo service elasticsearch start
+
+
+# install head
+sudo /usr/share/elasticsearch/bin/plugin -install mobz/elasticsearch-head
+
 
 # virtualenv global setup
 if ! command -v pip; then
@@ -147,3 +164,5 @@ fi
 
 # Cleanup
 apt-get clean
+
+
