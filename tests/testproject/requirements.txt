@@ -1,0 +1,5 @@
+Django
+django-haystack
+psycopg2
+ipdb
+elasticsearch
