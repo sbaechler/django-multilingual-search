@@ -88,7 +88,7 @@ apt-get install -qq python2.7 python2.7-dev python3.3 python3.3-dev
 # Postgresql
 
 
-apt-get -y install "postgresql-$PG_VERSION" "postgresql-contrib-$PG_VERSION"
+apt-get -y install "postgresql-$PG_VERSION" "postgresql-contrib-$PG_VERSION" libpq-dev
 
 PG_CONF="/etc/postgresql/$PG_VERSION/main/postgresql.conf"
 PG_HBA="/etc/postgresql/$PG_VERSION/main/pg_hba.conf"
