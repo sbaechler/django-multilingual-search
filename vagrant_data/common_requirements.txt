@@ -1,5 +1,4 @@
 Django==1.7.2
-psycopg2==2.5.4
 django-devserver==0.8.0
 Pillow==2.7.0
 gunicorn==19.1.1

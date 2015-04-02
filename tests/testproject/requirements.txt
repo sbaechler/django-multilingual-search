@@ -1,5 +1,5 @@
 Django
-django-haystack
+elasticsearch
 psycopg2
 ipdb
-elasticsearch
+-e git+git@github.com:sbaechler/django-haystack.git@b92e4ddc374439f4025f0f7ee6e0a4c5c488676f#egg=haystack

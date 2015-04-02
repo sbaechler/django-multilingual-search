@@ -22,4 +22,6 @@ The plugin uses Tox for testing under different Python versions.
 
 # Dataset
 
-https://archive.ics.uci.edu/ml/datasets/Reuters+RCV1+RCV2+Multilingual,+Multiview+Text+Categorization+Test+collection
+http://matrix.statmt.org/test_sets/list
+http://matrix.statmt.org/test_sets/newstest2013.tgz?1367361979
+
