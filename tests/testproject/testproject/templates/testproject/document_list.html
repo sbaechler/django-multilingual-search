@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-lg-6">
+      <form method="GET" action="{% url 'search' %}">
+      <div class="input-group">
+        <input name="q" type="text" class="form-control" placeholder="Search for...">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="submit">Go!</button>
+        </span>
+      </div><!-- /input-group -->
+      </form>
+    </div><!-- /.col-lg-6 -->
+  </div>
+
+  <h1>All elements</h1>
+  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    {% for document in object_list %}
+    <div class="panel panel-default">
+      <div class="panel-heading" role="tab">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" data-parent="#accordion" href="#c{{ document.id }}">
+            {{ document.title }} ({{ document.language }})
+          </a>
+        </h4>
+      </div>
+      <div id="c{{ document.id }}" class="panel-collapse collapse" role="tabpanel">
+        <div class="panel-body">
+          {{ document.text }}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+{% endblock %}

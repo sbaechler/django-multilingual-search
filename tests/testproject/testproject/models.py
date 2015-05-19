@@ -11,11 +11,9 @@ class Document(models.Model):
     text = models.TextField()
     title = models.TextField(blank=True)
 
-
     class Meta:
         verbose_name = 'Document'
         ordering = ['docid', 'language']
-
 
     def __unicode__(self):
         return '{0} ({1})'.format(self.docid, self.language)

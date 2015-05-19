@@ -3,6 +3,11 @@ Setting up the project for development
 
 The project contains a Vagrantfile which sets up a machine with Elasticsearch and Django.
 
+Elasticsearch
+-------------
+
+You can access the Web-Interface of Elasticsearch at http://localhost:9200/_plugin/head/
+
 
 Testing
 -------
