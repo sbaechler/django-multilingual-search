@@ -2,6 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 import codecs
 from django.core.management import BaseCommand
+from django.utils import translation
 import os
 from glob import glob
 from testproject.models import Document
@@ -57,8 +58,8 @@ class SGMLParser(HTMLParser):
 
     # create a new object instance
     def start_new_model(self, attrs):
-        self.model = self.model_class()
-        self.model.language = self.language
+        attributes = dict(attrs)
+        self.model, created = self.model_class.objects.get_or_create(docid=attributes['docid'])
         for attr, value in attrs:
             if hasattr(self.model, attr):
                 setattr(self.model, attr, value)
@@ -92,6 +93,7 @@ class Command(BaseCommand):
         files = glob(os.path.join(path, '*ref.*.sgm'))
         for file in files:
             language = file.split('.')[-2]
+            translation.activate(language)
             self.stdout.write('{0}: {1}'.format(file, language))
             with codecs.open(file, 'r', 'utf-8') as f:
                 parser = SGMLParser(Document, language)

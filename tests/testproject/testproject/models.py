@@ -5,7 +5,6 @@ from django.db import models
 
 class Document(models.Model):
     docid = models.CharField(max_length=100)
-    language = models.CharField(max_length=10)
     genre = models.CharField(max_length=20)
     origlang = models.CharField(max_length=10)
     text = models.TextField()
@@ -13,7 +12,7 @@ class Document(models.Model):
 
     class Meta:
         verbose_name = 'Document'
-        ordering = ['docid', 'language']
+        ordering = ['docid']
 
     def __unicode__(self):
         return '{0} ({1})'.format(self.docid, self.language)
