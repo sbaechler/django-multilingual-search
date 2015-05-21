@@ -1,19 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div class="row">
-    <div class="col-lg-6">
-      <form method="GET" action="{% url 'search' %}">
-      <div class="input-group">
-        <input name="q" type="text" class="form-control" placeholder="Search for...">
-        <span class="input-group-btn">
-          <button class="btn btn-default" type="submit">Go!</button>
-        </span>
-      </div><!-- /input-group -->
-      </form>
-    </div><!-- /.col-lg-6 -->
-  </div>
-
   <h1>All elements</h1>
   <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
     {% for document in object_list %}
@@ -21,7 +8,7 @@
       <div class="panel-heading" role="tab">
         <h4 class="panel-title">
           <a data-toggle="collapse" data-parent="#accordion" href="#c{{ document.id }}">
-            {{ document.title }} ({{ document.language }})
+            {{ document.title }}
           </a>
         </h4>
       </div>

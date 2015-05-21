@@ -1,6 +1,7 @@
 # coding: utf-8
 from __future__ import absolute_import, unicode_literals
-from django.views.generic import ListView
+from django.core.urlresolvers import reverse
+from django.views.generic import ListView, RedirectView
 from haystack.forms import HighlightedSearchForm
 from haystack.views import SearchView
 from .models import Document
@@ -21,9 +22,6 @@ class Search(SearchView):
     paginate_by = 20
 
 
-class LanguageView(ListView):
-
-    template_name = 'testproject/document_list.html'
-
-    def get_queryset(self):
-        return Document.objects.filter(language=self.args[0])
+class LanguageRedirectView(RedirectView):
+    def get_redirect_url(self):
+        return reverse('home')
