@@ -7,8 +7,14 @@ from haystack.backends.elasticsearch_backend import ElasticsearchSearchBackend, 
 
 
 class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
-
+    """
+    Subclasses the original backend.
+    """
     def __init__(self, connection_alias, **connection_options):
+        """
+        :param connection_alias: The connection name. Usually 'default'
+        :param connection_options: The connection settings.
+        """
         super(ElasticsearchMultilingualSearchBackend, self).__init__(
             connection_alias, **connection_options)
 
