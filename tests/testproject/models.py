@@ -15,7 +15,7 @@ class Document(models.Model):
         ordering = ['docid']
 
     def __unicode__(self):
-        return '{0} ({1})'.format(self.docid, self.language)
+        return '{0} ({1})'.format(self.title, self.docid)
 
     def __str__(self):
-        return '{0} ({1})'.format(self.docid, self.language)
+        return '{0} ({1})'.format(self.title, self.docid)

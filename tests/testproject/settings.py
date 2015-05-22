@@ -10,8 +10,11 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import sys
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+sys.path.insert(0, os.path.dirname(BASE_DIR))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'b2k427m)td!v8h-0@=qd-9pvvu@gd_zl-0^i@6j589uhp=egsx'
@@ -93,7 +96,7 @@ STATIC_URL = '/static/'
 
 HAYSTACK_CONNECTIONS = {
     'default': {
-        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'ENGINE': 'multilingual.elasticsearch_backend.ElasticsearchMultilingualSearchEngine',
         'URL': 'http://127.0.0.1:9200/',
         'INDEX_NAME': 'testproject',
     },
