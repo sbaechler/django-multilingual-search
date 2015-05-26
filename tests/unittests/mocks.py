@@ -13,15 +13,17 @@ class Data:
         'URL': 'http://127.0.0.1:9200/',
         'INDEX_NAME': 'testproject',
     }
-    existing_mapping = {'testproject': {'mappings': {'modelresult': {
-        'properties': {'docid': {'type': 'string', 'analyzer': 'snowball'},
-                       'django_ct': {'type': 'string', 'index': 'not_analyzed',
-                                     'include_in_all': False},
-                       'django_id': {'type': 'string', 'index': 'not_analyzed',
-                                     'include_in_all': False},
-                       'text': {'type': 'string', 'analyzer': 'snowball'},
-                       'id': {'type': 'string'}},
-        '_boost': {'null_value': 1.0, 'name': 'boost'}}}}}
+    existing_mapping = {'modelresult': {'_boost': {'null_value': 1.0, 'name': 'boost'},
+                                        'properties': {'django_id': {'index': 'not_analyzed',
+                                                                     'include_in_all': False,
+                                                                     'type': 'string'},
+                                                       'docid': {'analyzer': 'snowball',
+                                                                 'type': 'string'},
+                                                       'django_ct': {'index': 'not_analyzed',
+                                                                     'include_in_all': False,
+                                                                     'type': 'string'},
+                                                       'text': {'analyzer': 'snowball',
+                                                                'type': 'string'}}}}
 
     # same as modelresult.properties
     field_mapping = {'text': {'type': 'string', 'analyzer': 'snowball'},
