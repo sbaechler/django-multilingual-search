@@ -1,14 +1,16 @@
 # coding: utf-8
 from __future__ import absolute_import, unicode_literals
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, TestCase
 from django.conf import settings
-from haystack.backends.elasticsearch_backend import ElasticsearchSearchBackend
+from haystack.backends.elasticsearch_backend import ElasticsearchSearchBackend, \
+    ElasticsearchSearchEngine
 from haystack.management.commands.update_index import do_update
 from multilingual.elasticsearch_backend import ElasticsearchMultilingualSearchBackend, \
     ElasticsearchMultilingualSearchEngine
 from .mocks import mock_indices, Data
 from testproject.models import Document
 from multilingual.utils import get_analyzer_for
+from testproject.search_indexes import DocumentIndex
 
 try:
     from unittest import mock  # python >= 3.3
@@ -16,12 +18,8 @@ except ImportError:
     import mock  # python 2
 
 
-
-
-
 @mock.patch('elasticsearch.Elasticsearch')
-class MockingTest(SimpleTestCase):
-    fixtures = ['small']
+class BackendTest(SimpleTestCase):
     maxDiff = None
 
     def test_mocking_works(self, mock_obj):
@@ -47,7 +45,7 @@ class MockingTest(SimpleTestCase):
         """
         engine = ElasticsearchMultilingualSearchEngine()
         backend = mock.Mock()
-        engine.backend = backend
+        engine._backend = backend
         index = engine.get_unified_index()
         qs = Document.objects.all()
         start = 0
@@ -128,5 +126,35 @@ class MockingTest(SimpleTestCase):
         es.conn.indices.delete.assert_any_call(index='testproject-ru', ignore=404)
 
 
+@mock.patch('elasticsearch.Elasticsearch')
+class IndexTest(TestCase):
+    fixtures = ['small']
+    maxDiff = None
 
+    def test_fixture(self, mock_obj):
+        qs = Document.objects.all()
+        self.assertEqual(3, len(qs))
 
+    def test_haystack_update(self, mock_obj):
+        """
+        Test the update method on the Haystack Backend
+        """
+        engine = ElasticsearchSearchEngine()
+        es = ElasticsearchSearchBackend('default', **Data.connection_options)
+        engine._backend = es
+        es.setup()
+        unified_index = engine.get_unified_index()
+        index = unified_index.get_index(Document)
+        iterable = Document.objects.all()
+        es.update(index, iterable)
+        es.conn.indices.refresh.assert_called_with(index='testproject')
+        self.assertTrue(es.conn.bulk.called)
+        call_args = es.conn.bulk.call_args[0][0]
+        self.assertEqual(6, len(call_args))
+        self.assertEqual({'index': {'_id': 'testproject.document.1'}}, call_args[0])
+        self.assertEqual({'index': {'_id': 'testproject.document.2'}}, call_args[2])
+        self.assertEqual({'index': {'_id': 'testproject.document.3'}}, call_args[4])
+        self.assertIn('Republican leaders justified their policy', call_args[1]['text'])
+        self.assertIn('the PSA test sometimes shows erroneous results', call_args[3]['text'])
+        self.assertIn('The announcement of the probable discovery of the Higgs boson',
+                      call_args[5]['text'])

@@ -1,5 +1,6 @@
 # coding: utf-8
 from __future__ import absolute_import, unicode_literals
+from django.utils import translation
 from elasticsearch import NotFoundError, ImproperlyConfigured
 from haystack.backends import BaseEngine
 import haystack
@@ -85,6 +86,18 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
         for language in self.languages:
             self.index_name = self.index_name_for_language(language)
             super(ElasticsearchMultilingualSearchBackend, self).clear(models, commit)
+
+    def update(self, index, iterable, commit=True):
+        """
+        Updates the index with current data.
+        :param index: The search_indexes.Index object
+        :param iterable: The queryset
+        :param commit: commit to the backend.
+        """
+        for language in self.languages:
+            self.index_name = self.index_name_for_language(language)
+            with translation.override(language):
+                super(ElasticsearchMultilingualSearchBackend, self).update(index, iterable, commit)
 
     def build_schema(self, fields, language):
         content_field_name = ''
