@@ -1,7 +1,6 @@
 # coding: utf-8
 from __future__ import absolute_import, unicode_literals
 from django.test import SimpleTestCase
-from django.utils import translation
 from django.conf import settings
 from haystack.backends.elasticsearch_backend import ElasticsearchSearchBackend
 from haystack.management.commands.update_index import do_update
@@ -9,6 +8,7 @@ from multilingual.elasticsearch_backend import ElasticsearchMultilingualSearchBa
     ElasticsearchMultilingualSearchEngine
 from .mocks import mock_indices, Data
 from testproject.models import Document
+from multilingual.utils import get_analyzer_for
 
 try:
     from unittest import mock  # python >= 3.3
@@ -22,6 +22,7 @@ except ImportError:
 @mock.patch('elasticsearch.Elasticsearch')
 class MockingTest(SimpleTestCase):
     fixtures = ['small']
+    maxDiff = None
 
     def test_mocking_works(self, mock_obj):
         # create a backend instance
@@ -84,25 +85,48 @@ class MockingTest(SimpleTestCase):
         self.assertFalse(es.setup_complete)
         es.setup()
         self.assertTrue(es.setup_complete)
-        self.assertEqual(es.existing_mapping['de'], Data.existing_mapping)
+        self.assertNotEqual(es.existing_mapping['de'], Data.existing_mapping)
+        self.assertEqual(es.existing_mapping['de']['modelresult']['properties']['text']['analyzer'],
+                         get_analyzer_for('de'))
         es.conn.indices.create.assert_any_call(index='testproject-de',
                                                ignore=400, body=es.DEFAULT_SETTINGS)
         es.conn.indices.put_mapping.assert_any_call(index='testproject-de',
                                                     doc_type='modelresult',
-                                                    body=Data.existing_mapping)
+                                                    body=es.existing_mapping['de'])
 
-        self.assertEqual(es.existing_mapping['en'], Data.existing_mapping)
+        self.assertNotEqual(es.existing_mapping['en'], Data.existing_mapping)
+        self.assertEqual(es.existing_mapping['en']['modelresult']['properties']['text']['analyzer'],
+                         get_analyzer_for('en'))
         es.conn.indices.create.assert_any_call(index='testproject-en',
                                                ignore=400, body=es.DEFAULT_SETTINGS)
         es.conn.indices.put_mapping.assert_any_call(index='testproject-en',
                                                     doc_type='modelresult',
-                                                    body=Data.existing_mapping)
+                                                    body=es.existing_mapping['en'])
 
-        self.assertEqual(es.existing_mapping['fr'], Data.existing_mapping)
+        self.assertNotEqual(es.existing_mapping['fr'], Data.existing_mapping)
+        self.assertEqual(es.existing_mapping['fr']['modelresult']['properties']['text']['analyzer'],
+                         get_analyzer_for('fr'))
         es.conn.indices.create.assert_any_call(index='testproject-fr',
                                                ignore=400, body=es.DEFAULT_SETTINGS)
         es.conn.indices.put_mapping.assert_any_call(index='testproject-fr',
                                                     doc_type='modelresult',
-                                                    body=Data.existing_mapping)
+                                                    body=es.existing_mapping['fr'])
+
+    def test_haystack_clear(self, mock_obj):
+        es = ElasticsearchSearchBackend('default', **Data.connection_options)
+        es.setup()
+        es.clear(commit=True)  # commit is ignored anyway
+        es.conn.indices.delete.assert_called_with(index='testproject', ignore=404)
+
+    def test_multilingual_clear(self, mock_obj):
+        es = ElasticsearchMultilingualSearchBackend('default', **Data.connection_options)
+        es.setup()
+        es.clear(commit=False)
+        es.conn.indices.delete.assert_any_call(index='testproject-en', ignore=404)
+        es.conn.indices.delete.assert_any_call(index='testproject-fr', ignore=404)
+        es.conn.indices.delete.assert_any_call(index='testproject-de', ignore=404)
+        es.conn.indices.delete.assert_any_call(index='testproject-ru', ignore=404)
+
+
 
 
