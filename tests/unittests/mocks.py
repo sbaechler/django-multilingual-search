@@ -36,9 +36,6 @@ class Data:
     index_keys = ['django_ct', 'id', 'text', 'docid', 'django_id', '_id']
 
 
-
-
-
 def mock_indices():
     mymock = mock.Mock()
     attrs = {'get_mapping.return_value': Data.existing_mapping}

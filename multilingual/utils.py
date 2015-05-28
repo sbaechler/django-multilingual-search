@@ -1,6 +1,7 @@
 # coding: utf-8
 from __future__ import absolute_import, unicode_literals
 
+
 def get_analyzer_for(language_code, default='snowball'):
     """
     Get the available language analyzer for the given language code or else the default.
@@ -11,7 +12,7 @@ def get_analyzer_for(language_code, default='snowball'):
     """
     languages = {
         'ar': 'arabic',
-        #'': 'armenian',
+        # '': 'armenian',
         'eu': 'basque',
         'pt-br': 'brazilian',
         'bg': 'bulgarian',

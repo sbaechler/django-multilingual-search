@@ -2,6 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 from django.test import SimpleTestCase, TestCase
 from django.conf import settings
+from django.utils import translation
 from haystack.backends.elasticsearch_backend import ElasticsearchSearchBackend, \
     ElasticsearchSearchEngine
 from haystack.management.commands.update_index import do_update
@@ -10,7 +11,6 @@ from multilingual.elasticsearch_backend import ElasticsearchMultilingualSearchBa
 from .mocks import mock_indices, Data
 from testproject.models import Document
 from multilingual.utils import get_analyzer_for
-from testproject.search_indexes import DocumentIndex
 
 try:
     from unittest import mock  # python >= 3.3
@@ -137,7 +137,7 @@ class IndexTest(TestCase):
 
     def test_haystack_update(self, mock_obj):
         """
-        Test the update method on the Haystack Backend
+        Test the update method on the Haystack backend
         """
         engine = ElasticsearchSearchEngine()
         es = ElasticsearchSearchBackend('default', **Data.connection_options)
@@ -155,6 +155,32 @@ class IndexTest(TestCase):
         self.assertEqual({'index': {'_id': 'testproject.document.2'}}, call_args[2])
         self.assertEqual({'index': {'_id': 'testproject.document.3'}}, call_args[4])
         self.assertIn('Republican leaders justified their policy', call_args[1]['text'])
+        doc1 = Document.objects.get(pk=1)
+        self.assertIn(doc1.text, call_args[1]['text'])
         self.assertIn('the PSA test sometimes shows erroneous results', call_args[3]['text'])
         self.assertIn('The announcement of the probable discovery of the Higgs boson',
                       call_args[5]['text'])
+
+    def test_multilingual_update(self, mock_obj):
+        """
+        Test the update method on the multilingual backend.
+        """
+        engine = ElasticsearchMultilingualSearchEngine()
+        es = engine.backend('default', **Data.connection_options)
+        es.setup()
+        unified_index = engine.get_unified_index()
+        index = unified_index.get_index(Document)
+        iterable = Document.objects.all()
+        es.update(index, iterable)
+        es.conn.indices.refresh.assert_any_call(index='testproject-en')
+        es.conn.indices.refresh.assert_any_call(index='testproject-de')
+        es.conn.indices.refresh.assert_any_call(index='testproject-fr')
+        self.assertTrue(es.conn.bulk.called)
+        self.assertEqual(len(es.conn.bulk.call_args_list), len(settings.LANGUAGES))
+        for call_args in es.conn.bulk.call_args_list:
+            language = call_args[1]['index'][-2:]
+            content = call_args[0][0][1]
+            document = Document.objects.get(id=content['django_id'])
+            self.assertEqual(document.docid, content['docid'])
+            with translation.override(language):
+                self.assertIn(document.text[:200], content['text'])

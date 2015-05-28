@@ -2,6 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 from django.utils import translation
 from elasticsearch import NotFoundError, ImproperlyConfigured
+import elasticsearch
 from haystack.backends import BaseEngine
 import haystack
 from django.conf import settings as django_settings
@@ -94,6 +95,16 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
         :param iterable: The queryset
         :param commit: commit to the backend.
         """
+        if not self.setup_complete:
+            try:
+                self.setup()
+            except elasticsearch.TransportError as e:
+                if not self.silently_fail:
+                    raise
+
+                self.log.error("Failed to add documents to Elasticsearch: %s", e)
+                return
+
         for language in self.languages:
             self.index_name = self.index_name_for_language(language)
             with translation.override(language):
@@ -125,8 +136,7 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
 
             mapping[field_class.index_fieldname] = field_mapping
 
-        return (content_field_name, mapping)
-
+        return content_field_name, mapping
 
 
 class ElasticsearchMultilingualSearchEngine(BaseEngine):
