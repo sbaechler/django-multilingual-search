@@ -1,6 +1,7 @@
 # coding: utf-8
 from __future__ import absolute_import, unicode_literals
 from django.utils import translation
+from django.utils.translation import get_language
 from elasticsearch import NotFoundError, ImproperlyConfigured
 import elasticsearch
 from haystack.backends import BaseEngine
@@ -139,12 +140,22 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
 
         return content_field_name, mapping
 
+    def search(self, query_string, **kwargs):
+        """
+        The main search method
+        :param query_string: The string to pass to Elasticsearch. e.g. '*:*'
+        :param kwargs: start_offset, end_offset, result_class
+        :return: result_class instance
+        """
+        self.index_name = self.index_name_for_language(get_language())
+        self.log.debug('search method called (%s)' % get_language())
+        return super(ElasticsearchMultilingualSearchBackend, self).search(query_string, **kwargs)
 
-class ElasticsearchMultilingualSeqrchQuery(ElasticsearchSearchQuery):
-    def run(self, spelling_query=None, **kwargs):
-        super(ElasticsearchMultilingualSeqrchQuery, self).run(spelling_query, **kwargs)
+
+class ElasticsearchMultilingualSearchQuery(ElasticsearchSearchQuery):
+    """ The original class is good enough for now. """
 
 
 class ElasticsearchMultilingualSearchEngine(BaseEngine):
     backend = ElasticsearchMultilingualSearchBackend
-    query = ElasticsearchMultilingualSeqrchQuery
+    query = ElasticsearchMultilingualSearchQuery

@@ -31,6 +31,7 @@ class BackendTest(SimpleTestCase):
         # in the constructor, an Elasticsearche instance is created as 'conn' property.
         self.assertTrue(isinstance(es.conn, mock.Mock))
         self.assertIsNot(es.conn, mock_obj)  # a new mock is created.
+        self.assertFalse(es.silently_fail)
         indices = mock_indices()  # use the indices mock from the mocks module.
         es.conn.attach_mock(indices, 'indices')
         self.assertEqual(es.conn.indices.get_mapping(), Data.existing_mapping)
