@@ -87,6 +87,7 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
         for language in self.languages:
             self.index_name = self.index_name_for_language(language)
             super(ElasticsearchMultilingualSearchBackend, self).clear(models, commit)
+        self.existing_mapping = {l: {} for (l, v) in django_settings.LANGUAGES}
 
     def update(self, index, iterable, commit=True):
         """
@@ -139,6 +140,11 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
         return content_field_name, mapping
 
 
+class ElasticsearchMultilingualSeqrchQuery(ElasticsearchSearchQuery):
+    def run(self, spelling_query=None, **kwargs):
+        super(ElasticsearchMultilingualSeqrchQuery, self).run(spelling_query, **kwargs)
+
+
 class ElasticsearchMultilingualSearchEngine(BaseEngine):
     backend = ElasticsearchMultilingualSearchBackend
-    query = ElasticsearchSearchQuery
+    query = ElasticsearchMultilingualSeqrchQuery

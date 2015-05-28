@@ -38,7 +38,14 @@ class IndexTest(TestCase):
         """
         engine = ElasticsearchMultilingualSearchEngine()
         es = engine.backend('default', **Data.connection_options)
+        es.clear(commit=True)
+        # the indexes don't exist yet.
+        for language in es.languages:
+            index_name = es.index_name_for_language(language)
+            self.assertFalse(es.conn.indices.exists(index_name))
+
         es.setup()
+
         unified_index = engine.get_unified_index()
         index = unified_index.get_index(Document)
         iterable = Document.objects.all()
@@ -67,3 +74,5 @@ class IndexTest(TestCase):
             self.assertEqual(doc['_source']['docid'], reference.docid)
             with translation.override(language):
                 self.assertIn(escape(reference.text), doc['_source']['text'])
+
+        es.clear(commit=True)

@@ -6,6 +6,7 @@ from django.utils import translation
 from haystack.backends.elasticsearch_backend import ElasticsearchSearchBackend, \
     ElasticsearchSearchEngine
 from haystack.management.commands.update_index import do_update
+from haystack.query import SearchQuerySet
 from multilingual.elasticsearch_backend import ElasticsearchMultilingualSearchBackend, \
     ElasticsearchMultilingualSearchEngine
 from .mocks import mock_indices, Data
@@ -16,8 +17,10 @@ try:
     from unittest import mock  # python >= 3.3
 except ImportError:
     import mock  # python 2
-    
+
 
 @mock.patch('elasticsearch.Elasticsearch')
 class BackendTest(SimpleTestCase):
     maxDiff = None
+    searchqueryset = SearchQuerySet()
+
