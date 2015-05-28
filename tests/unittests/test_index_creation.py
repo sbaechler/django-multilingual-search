@@ -3,6 +3,7 @@ from __future__ import absolute_import, unicode_literals
 from django.test import SimpleTestCase, TestCase
 from django.conf import settings
 from django.utils import translation
+from django.utils.html import escape
 from haystack.backends.elasticsearch_backend import ElasticsearchSearchBackend, \
     ElasticsearchSearchEngine
 from haystack.management.commands.update_index import do_update
@@ -183,4 +184,4 @@ class IndexTest(TestCase):
             document = Document.objects.get(id=content['django_id'])
             self.assertEqual(document.docid, content['docid'])
             with translation.override(language):
-                self.assertIn(document.text, content['text'])
+                self.assertIn(escape(document.text), content['text'])

@@ -4,6 +4,7 @@ from django.conf import settings
 from django.test import TestCase
 from django.utils import translation
 import time
+from django.utils.html import escape
 from testproject.models import Document
 from unittests.mocks import Data
 from multilingual.elasticsearch_backend import ElasticsearchMultilingualSearchBackend, \
@@ -44,21 +45,25 @@ class IndexTest(TestCase):
         es.update(index, iterable)
         id = 'testproject.document.10'
         i = 0
+        # use this document as a reference.
         reference = Document.objects.get(id=10)
 
         for language in es.languages:
+            # check all language indexes
             index_name = es.index_name_for_language(language)
             self.assertTrue(es.conn.indices.exists(index_name))
             count = es.conn.count(index=index_name)
             self.assertEqual(self.count, count['count'])
 
+            # make sure the index has been created
             while not es.conn.exists(index=index_name, id=id) and i < 5:
                 time.sleep(0.5)
                 i += 1
             self.assertTrue(es.conn.exists(index=index_name, id=id))
+            # get the document with the above id from the correct index
             doc = es.conn.get(index=index_name, id=id)
             self.assertTrue(doc['found'])
             self.assertEqual(doc['_type'], 'modelresult')
             self.assertEqual(doc['_source']['docid'], reference.docid)
             with translation.override(language):
-                self.assertIn(reference.text, doc['_source']['text'])
+                self.assertIn(escape(reference.text), doc['_source']['text'])
