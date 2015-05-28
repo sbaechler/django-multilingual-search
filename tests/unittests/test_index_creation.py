@@ -183,4 +183,4 @@ class IndexTest(TestCase):
             document = Document.objects.get(id=content['django_id'])
             self.assertEqual(document.docid, content['docid'])
             with translation.override(language):
-                self.assertIn(document.text[:200], content['text'])
+                self.assertIn(document.text, content['text'])
