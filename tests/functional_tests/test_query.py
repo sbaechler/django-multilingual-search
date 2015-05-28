@@ -1,10 +1,9 @@
 # coding: utf-8
 from __future__ import absolute_import, unicode_literals
-from django.test import SimpleTestCase, TestCase
+from django.test import SimpleTestCase
 
 from haystack.query import SearchQuerySet
-from multilingual.elasticsearch_backend import ElasticsearchMultilingualSearchBackend, \
-    ElasticsearchMultilingualSearchEngine, ElasticsearchMultilingualSearchQuery
+from multilingual.elasticsearch_backend import ElasticsearchMultilingualSearchQuery
 
 
 class BackendTest(SimpleTestCase):
@@ -16,4 +15,3 @@ class BackendTest(SimpleTestCase):
         self.assertIsInstance(sqs.query, ElasticsearchMultilingualSearchQuery)
         all_results = sqs.all()
         list(all_results)
-

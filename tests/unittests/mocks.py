@@ -45,6 +45,7 @@ class Data:
                    '_shards': {'failed': 0, 'total': 5, 'successful': 5},
                    'hits': {'total': 0, 'max_score': None, 'hits': []}, 'took': 7}
 
+
 def mock_indices():
     mymock = mock.Mock()
     attrs = {'get_mapping.return_value': Data.existing_mapping}
