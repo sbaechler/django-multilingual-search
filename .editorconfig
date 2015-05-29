@@ -8,6 +8,8 @@ charset = utf-8
 trim_trailing_whitespace = true
 indent_style = space
 indent_size = 4
+max_line_length = 100
+quote_type = single
 
 # HTML: 2 spaces
 [*.html]

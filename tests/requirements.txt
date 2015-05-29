@@ -1,6 +1,9 @@
-Django
-elasticsearch
+Django>=1.4.20
+elasticsearch>=1.5.0
+urllib3>=1.10.4
 psycopg2
 ipdb
--e git+git@github.com:sbaechler/django-haystack.git@b92e4ddc374439f4025f0f7ee6e0a4c5c488676f#egg=haystack
+# django-haystack
+# during development, use editable version
+-e git+git@github.com:sbaechler/django-haystack.git@cecb459ff4468a79a43cead3d09e213d0980c080#egg=haystack
 django-modeltranslation==0.9.1

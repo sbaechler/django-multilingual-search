@@ -1,13 +1,11 @@
 # coding: utf-8
 from __future__ import absolute_import, unicode_literals
-from django.utils import translation
-from django.utils.translation import get_language
-from elasticsearch import NotFoundError, ImproperlyConfigured
-import elasticsearch
-from haystack.backends import BaseEngine
-import haystack
 from django.conf import settings as django_settings
-
+from django.utils import translation
+import elasticsearch
+from elasticsearch import NotFoundError, ImproperlyConfigured
+import haystack
+from haystack.backends import BaseEngine
 from haystack.backends.elasticsearch_backend import ElasticsearchSearchBackend, \
     ElasticsearchSearchQuery, FIELD_MAPPINGS, DEFAULT_FIELD_MAPPING
 from haystack.constants import DJANGO_CT, DJANGO_ID
@@ -40,6 +38,8 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
     def setup(self):
         """
         Defers loading until needed.
+        Compares the existing mapping for each language with the current codebase.
+        If they differ, it automatically updates the index.
         """
         # Get the existing mapping & cache it. We'll compare it
         # during the ``update`` & if it doesn't match, we'll put the new
@@ -85,6 +85,11 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
         self.setup_complete = True
 
     def clear(self, models=[], commit=True):
+        """
+        Clears all indexes for the current project.
+        :param models: if specified, only deletes the entries for the given models.
+        :param commit: This is ignored by Haystack (maybe a bug?)
+        """
         for language in self.languages:
             self.index_name = self.index_name_for_language(language)
             super(ElasticsearchMultilingualSearchBackend, self).clear(models, commit)
@@ -113,6 +118,13 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
                 super(ElasticsearchMultilingualSearchBackend, self).update(index, iterable, commit)
 
     def build_schema(self, fields, language):
+        """
+        Build the index schema for the given field. New argument language.
+        :param fields:
+        :param language: the language code
+        :return: a dictionary wit the field name (string) and the
+                 mapping configuration (dictionary)
+        """
         content_field_name = ''
         mapping = {
             DJANGO_CT: {'type': 'string', 'index': 'not_analyzed', 'include_in_all': False},
@@ -120,7 +132,8 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
         }
 
         for field_name, field_class in fields.items():
-            field_mapping = FIELD_MAPPINGS.get(field_class.field_type, DEFAULT_FIELD_MAPPING).copy()
+            field_mapping = FIELD_MAPPINGS.get(
+                field_class.field_type, DEFAULT_FIELD_MAPPING).copy()
             if field_class.boost != 1.0:
                 field_mapping['boost'] = field_class.boost
 
@@ -147,8 +160,8 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
         :param kwargs: start_offset, end_offset, result_class
         :return: result_class instance
         """
-        self.index_name = self.index_name_for_language(get_language())
-        self.log.debug('search method called (%s)' % get_language())
+        self.index_name = self.index_name_for_language(translation.get_language())
+        self.log.debug('search method called (%s)' % translation.get_language())
         return super(ElasticsearchMultilingualSearchBackend, self).search(query_string, **kwargs)
 
 
