@@ -13,8 +13,11 @@ Install with pip:
 
     pip install django-multilingual-search
     
+The major and minor versions of this project correspond to the Haystack version the package was
+tested against.
     
-## Configuration::
+    
+## Configuration
 
 The app provides a drop-in replacement for the ElasticsearchEngine of Haystack.
 To use it, specify this engine in `settings.py`:
@@ -26,3 +29,12 @@ To use it, specify this engine in `settings.py`:
             'INDEX_NAME': 'myproject',
         },
     }
+
+## Contributing
+
+Please read the [Contributing](./CONTRIBUTING.md) guide.
+
+
+## Release History
+
+- 2.3.0: First release

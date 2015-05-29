@@ -7,7 +7,7 @@ def read(fname):
 
 setup(
     name='django-multilingual-search',
-    version='0.1.0',
+    version='2.3.0.alpha',
     packages=['multilingual'],
     url='https://github.com/sbaechler/django-multilingual-search',
     license='BSD',

@@ -10,11 +10,3 @@ indent_style = space
 indent_size = 4
 max_line_length = 100
 quote_type = single
-
-# HTML: 2 spaces
-[*.html]
-indent_size = 2
-
-# SCSS: 2 spaces according to scss-lint
-[*.scss]
-indent_size = 2
