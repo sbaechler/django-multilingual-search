@@ -53,14 +53,14 @@ class BackendTest(SimpleTestCase):
         start = 0
         end = len(qs)
         total = end - start
-        do_update(backend, index, qs, start, end, total, verbosity=1, commit=False)
+        do_update(backend, index, qs, start, end, total, verbosity=1)
         # The update method has been called
         self.assertTrue(backend.update.called)
         call_args_list = backend.update.call_args_list
         # args, the queryset cannot be testet for equality.
         self.assertEqual(call_args_list[0][0][0], index)
         # kwargs
-        self.assertEqual(call_args_list[0][1], {'commit': False})
+        # self.assertEqual(call_args_list[0][1], {'commit': False})  only Haystack >= 2.4
 
     def test_setup_on_haystack_backend(self, mock_obj):
         """
