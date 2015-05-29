@@ -7,7 +7,7 @@ import time
 from django.utils.html import escape
 from testproject.models import Document
 from unittests.mocks import Data
-from multilingual.elasticsearch_backend import ElasticsearchMultilingualSearchBackend, \
+from multilingual.elasticsearch import ElasticsearchMultilingualSearchBackend, \
     ElasticsearchMultilingualSearchEngine
 
 

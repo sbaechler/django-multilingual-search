@@ -7,7 +7,7 @@ from django.utils.html import escape
 from haystack.backends.elasticsearch_backend import ElasticsearchSearchBackend, \
     ElasticsearchSearchEngine
 from haystack.management.commands.update_index import do_update
-from multilingual.elasticsearch_backend import ElasticsearchMultilingualSearchBackend, \
+from multilingual.elasticsearch import ElasticsearchMultilingualSearchBackend, \
     ElasticsearchMultilingualSearchEngine
 from .mocks import mock_indices, Data
 from testproject.models import Document

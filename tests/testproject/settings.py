@@ -96,7 +96,7 @@ STATIC_URL = '/static/'
 
 HAYSTACK_CONNECTIONS = {
     'default': {
-        'ENGINE': 'multilingual.elasticsearch_backend.ElasticsearchMultilingualSearchEngine',
+        'ENGINE': 'multilingual.elasticsearch.ElasticsearchMultilingualSearchEngine',
         'URL': 'http://127.0.0.1:9200/',
         'INDEX_NAME': 'testproject',
         'SILENTLY_FAIL': False

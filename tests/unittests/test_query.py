@@ -5,7 +5,7 @@ from django.utils import translation
 
 from haystack.backends.elasticsearch_backend import ElasticsearchSearchBackend
 from haystack.query import SearchQuerySet
-from multilingual.elasticsearch_backend import ElasticsearchMultilingualSearchQuery, \
+from multilingual.elasticsearch import ElasticsearchMultilingualSearchQuery, \
     ElasticsearchMultilingualSearchBackend
 from .mocks import Data, mock_backend
 

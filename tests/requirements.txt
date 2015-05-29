@@ -3,7 +3,5 @@ elasticsearch>=1.5.0
 urllib3>=1.10.4
 psycopg2
 ipdb
-# django-haystack
-# during development, use editable version
--e git+git@github.com:sbaechler/django-haystack.git@cecb459ff4468a79a43cead3d09e213d0980c080#egg=haystack
+django-haystack>=2.3.1
 django-modeltranslation==0.9.1

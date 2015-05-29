@@ -6,7 +6,7 @@ from django.utils.html import escape
 
 from haystack.query import SearchQuerySet
 import time
-from multilingual.elasticsearch_backend import ElasticsearchMultilingualSearchQuery, \
+from multilingual.elasticsearch import ElasticsearchMultilingualSearchQuery, \
     ElasticsearchMultilingualSearchEngine
 from testproject.models import Document
 from unittests.mocks import Data
