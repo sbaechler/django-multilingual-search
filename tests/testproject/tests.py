@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
-from tests.unittests.test_index_creation import BackendTest as BT1
-from tests.unittests.test_query import BackendTest as BT2
-from tests.functional_tests.test_query import BackendTest as BT3
-from tests.functional_tests.test_index_creation import IndexTest
+# import all test modules for the old test runner
+from tests.unittests.test_index_creation import BackendTest as BT1  # noqa
+from tests.unittests.test_query import BackendTest as BT2  # noqa
+from tests.functional_tests.test_query import BackendTest as BT3  # noqa
+from tests.functional_tests.test_index_creation import IndexTest  # noqa
