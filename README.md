@@ -6,6 +6,7 @@ Instead of a single index it creates an index for each language specified in `se
 
 A query is routed to the index of the currently active language.
 
+[![Build Status](https://travis-ci.org/sbaechler/django-multilingual-search.svg?branch=master)](https://travis-ci.org/sbaechler/django-multilingual-search)
 
 ## Installation
 
