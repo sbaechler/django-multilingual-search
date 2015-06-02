@@ -103,6 +103,7 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
         :param iterable: The queryset
         :param commit: commit to the backend.
         """
+        # setup here because self.existing_mappings are overridden.
         if not self.setup_complete:
             try:
                 self.setup()

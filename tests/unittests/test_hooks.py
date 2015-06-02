@@ -27,7 +27,7 @@ class BackendTest(TestCase):
         # send the post_save signal
         index = haystack.connections['default'].get_unified_index().get_index(Document)
         index.update_object(doc.object, 'default')
-        backend = index._get_backend('default')
+        backend = index._get_backend('default')  # Multilingual Backend
         # test if the command has been sent to ES
         es = backend.conn
         self.assertFalse(es.delete.called)
