@@ -2,6 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 from django.conf import settings as django_settings
 from django.utils import translation
+from haystack.utils import get_identifier
 import elasticsearch
 from elasticsearch import NotFoundError, ImproperlyConfigured
 import haystack
@@ -163,6 +164,29 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
         self.index_name = self.index_name_for_language(translation.get_language())
         self.log.debug('search method called (%s)' % translation.get_language())
         return super(ElasticsearchMultilingualSearchBackend, self).search(query_string, **kwargs)
+
+    def remove(self, obj_or_string, commit=True):
+        """
+        Removes an object from the index.
+        :param obj_or_string:
+        :param commit:
+        """
+        if not self.setup_complete:
+            try:
+                self.setup()
+            except elasticsearch.TransportError as e:
+                if not self.silently_fail:
+                    raise
+                doc_id = get_identifier(obj_or_string)
+                self.log.error("Failed to remove document '%s' from Elasticsearch: %s",
+                                   doc_id, e)
+                return
+
+        for language in self.languages:
+            self.index_name = self.index_name_for_language(language)
+            with translation.override(language):
+                super(ElasticsearchMultilingualSearchBackend, self).remove(obj_or_string,
+                                                                           commit=commit)
 
 
 class ElasticsearchMultilingualSearchQuery(ElasticsearchSearchQuery):

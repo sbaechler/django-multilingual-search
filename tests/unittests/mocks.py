@@ -1,5 +1,8 @@
 # coding: utf-8
 from __future__ import absolute_import, unicode_literals
+from django.conf import settings
+from django.core import serializers
+import os
 
 try:
     from unittest import mock  # python >= 3.3
@@ -59,3 +62,16 @@ def mock_backend():
     attrs = {'search.return_value': {}}
     mymock.configure_mock(**attrs)
     return mymock
+
+
+def create_documents():
+    """
+    Deserializes objects from the 'small' fixture
+    :return: A list of DeserializedObject
+    https://docs.djangoproject.com/en/1.8/topics/serialization/#serialization-formats-json
+    """
+    path = os.path.join(settings.BASE_DIR, 'testproject', 'fixtures', 'small.json')
+    with open(path, 'r') as f:
+        documents = list(serializers.deserialize('json', f))
+
+    return documents
