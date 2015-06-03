@@ -2,6 +2,7 @@
 from distutils.core import setup
 import os
 
+
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
@@ -17,7 +18,7 @@ if os.path.abspath(__file__).split(os.path.sep)[1] == 'vagrant':
 
 setup(
     name='django-multilingual-search',
-    version='2.3.0.alpha',
+    version='2.3.0.beta',
     packages=['multilingual'],
     url='https://github.com/sbaechler/django-multilingual-search',
     license='BSD',

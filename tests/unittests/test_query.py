@@ -43,7 +43,7 @@ class BackendTest(SimpleTestCase):
         for language in ['de', 'en', 'ru']:
             with translation.override(language):
                 es.search('*:*', end_offset=1)
-                kwargs['index'] = es.index_name_for_language(language)
+                kwargs['index'] = es._index_name_for_language(language)
                 es.conn.search.assert_called_with(**kwargs)
 
     def test_haystack_process_results(self, mock_es):

@@ -34,7 +34,7 @@ class HookTest(TestCase):
         id = 'testproject.document.1'
 
         for language in es.languages:
-            index_name = es.index_name_for_language(language)
+            index_name = es._index_name_for_language(language)
             self.assertTrue(es.conn.indices.exists(index_name))
             count = es.conn.count(index=index_name)
             self.assertEqual(1, count['count'])
@@ -50,7 +50,7 @@ class HookTest(TestCase):
         # delete the object. The object needs to be removed from the index.
         reference.delete()
         for language in es.languages:
-            index_name = es.index_name_for_language(language)
+            index_name = es._index_name_for_language(language)
             self.assertTrue(es.conn.indices.exists(index_name))
             count = es.conn.count(index=index_name)
             self.assertEqual(0, count['count'])

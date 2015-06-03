@@ -2,20 +2,20 @@
 from __future__ import absolute_import, unicode_literals
 from django.conf import settings as django_settings
 from django.utils import translation
-from haystack.utils import get_identifier
 import elasticsearch
 from elasticsearch import NotFoundError, ImproperlyConfigured
 import haystack
 from haystack.backends import BaseEngine
-from haystack.backends.elasticsearch_backend import ElasticsearchSearchBackend, \
-    ElasticsearchSearchQuery, FIELD_MAPPINGS, DEFAULT_FIELD_MAPPING
+from haystack.backends.elasticsearch_backend import (
+    ElasticsearchSearchBackend, ElasticsearchSearchQuery, FIELD_MAPPINGS, DEFAULT_FIELD_MAPPING)
 from haystack.constants import DJANGO_CT, DJANGO_ID
+from haystack.utils import get_identifier
 from .utils import get_analyzer_for
 
 
 class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
     """
-    Subclasses the original backend.
+    Subclasses the Haystack backend.
     """
     def __init__(self, connection_alias, **connection_options):
         """
@@ -30,11 +30,14 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
         if not hasattr(django_settings, 'LANGUAGES'):
             raise ImproperlyConfigured("You must specify 'LANGUAGES' in your Django settings.")
         self.languages = [l[0] for l in django_settings.LANGUAGES]
-        self.existing_mapping = {l: {} for (l, v) in django_settings.LANGUAGES}
+        self._reset_existing_mapping()
         self.content_field_name = ''
 
-    def index_name_for_language(self, language):
+    def _index_name_for_language(self, language):
         return '{0}-{1}'.format(self.index_base_name, language)
+
+    def _reset_existing_mapping(self):
+        self.existing_mapping = dict((l, {}) for l, v in django_settings.LANGUAGES)
 
     def setup(self):
         """
@@ -46,7 +49,7 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
         # during the ``update`` & if it doesn't match, we'll put the new
         # mapping.
         for language in self.languages:
-            self.index_name = self.index_name_for_language(language)
+            self.index_name = self._index_name_for_language(language)
             try:
                 self.existing_mapping[language] = self.conn.indices.get_mapping(
                     index=self.index_name)
@@ -74,10 +77,15 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
             if current_mapping != self.existing_mapping[language]:
                 try:
                     # Make sure the index is there first.
-                    self.conn.indices.create(index=self.index_name,
-                                             body=self.DEFAULT_SETTINGS, ignore=400)
-                    self.conn.indices.put_mapping(index=self.index_name,
-                                                  doc_type='modelresult', body=current_mapping)
+                    self.conn.indices.create(
+                        index=self.index_name,
+                        body=self.DEFAULT_SETTINGS,
+                        ignore=400)
+                    self.conn.indices.put_mapping(
+                        index=self.index_name,
+                        doc_type='modelresult',
+                        body=current_mapping
+                    )
                     self.existing_mapping[language] = current_mapping
                 except Exception:
                     if not self.silently_fail:
@@ -92,9 +100,9 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
         :param commit: This is ignored by Haystack (maybe a bug?)
         """
         for language in self.languages:
-            self.index_name = self.index_name_for_language(language)
+            self.index_name = self._index_name_for_language(language)
             super(ElasticsearchMultilingualSearchBackend, self).clear(models, commit)
-        self.existing_mapping = {l: {} for (l, v) in django_settings.LANGUAGES}
+        self._reset_existing_mapping()
 
     def update(self, index, iterable, commit=True):
         """
@@ -115,7 +123,7 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
                 return
 
         for language in self.languages:
-            self.index_name = self.index_name_for_language(language)
+            self.index_name = self._index_name_for_language(language)
             with translation.override(language):
                 super(ElasticsearchMultilingualSearchBackend, self).update(index, iterable, commit)
 
@@ -162,7 +170,7 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
         :param kwargs: start_offset, end_offset, result_class
         :return: result_class instance
         """
-        self.index_name = self.index_name_for_language(translation.get_language())
+        self.index_name = self._index_name_for_language(translation.get_language())
         self.log.debug('search method called (%s)' % translation.get_language())
         return super(ElasticsearchMultilingualSearchBackend, self).search(query_string, **kwargs)
 
@@ -183,7 +191,7 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
                 return
 
         for language in self.languages:
-            self.index_name = self.index_name_for_language(language)
+            self.index_name = self._index_name_for_language(language)
             with translation.override(language):
                 super(ElasticsearchMultilingualSearchBackend, self).remove(obj_or_string,
                                                                            commit=commit)

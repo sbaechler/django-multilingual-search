@@ -48,7 +48,7 @@ class BackendTest(TestCase):
 
         for language in es.languages:
             # check all language indexes
-            index_name = es.index_name_for_language(language)
+            index_name = es._index_name_for_language(language)
             self.assertTrue(es.conn.indices.exists(index_name))
             count = es.conn.count(index=index_name)
             self.assertEqual(self.count, count['count'])
