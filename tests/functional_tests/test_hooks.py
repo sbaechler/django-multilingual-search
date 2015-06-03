@@ -5,8 +5,7 @@ from django.utils import translation
 from django.utils.html import escape
 import haystack
 from haystack.signals import RealtimeSignalProcessor
-from multilingual.elasticsearch import ElasticsearchMultilingualSearchBackend, \
-    ElasticsearchMultilingualSearchEngine
+from multilingual.elasticsearch import ElasticsearchMultilingualSearchEngine
 from testproject.models import Document
 from unittests.mocks import create_documents, Data
 
@@ -19,14 +18,12 @@ class HookTest(TestCase):
         es = engine.backend('default', **Data.connection_options)
         es.clear(commit=True)
 
-        es.setup()
         unified_index = engine.get_unified_index()
         index = unified_index.get_index(Document)
         iterable = Document.objects.all()
         es.update(index, iterable)
 
-        signal_processor = RealtimeSignalProcessor(haystack.connections,
-                                           haystack.connection_router)
+        rsp = RealtimeSignalProcessor(haystack.connections, haystack.connection_router)  # noqa
         self.assertTrue(es.conn.indices.exists('testproject-en'))
         count = es.conn.count(index='testproject-en')
         self.assertEqual(0, count['count'])

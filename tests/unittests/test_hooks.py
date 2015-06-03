@@ -26,10 +26,13 @@ class BackendTest(TestCase):
         doc.save()
         # send the post_save signal
         index = haystack.connections['default'].get_unified_index().get_index(Document)
-        index.update_object(doc.object, 'default')
         backend = index._get_backend('default')  # Multilingual Backend
         # test if the command has been sent to ES
+        if not isinstance(backend.conn, mock.Mock):
+            backend.conn = mock.MagicMock()
         es = backend.conn
+        index.update_object(doc.object, 'default')
+
         self.assertFalse(es.delete.called)
         self.assertTrue(es.bulk.called)
         call_args = es.bulk.call_args_list
@@ -57,8 +60,7 @@ class BackendTest(TestCase):
     @mock.patch.object(RealtimeSignalProcessor, 'handle_delete')
     def test_hook_called(self, mock_delete, mock_save, mock_es):
         # check if the signals are triggered
-        signal_processor = RealtimeSignalProcessor(haystack.connections,
-                                                   haystack.connection_router)
+        rsp = RealtimeSignalProcessor(haystack.connections, haystack.connection_router)  # noqa
         self.assertFalse(mock_delete.called)
         self.assertFalse(mock_save.called)
         documents = create_documents()

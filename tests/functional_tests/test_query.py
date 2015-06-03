@@ -21,6 +21,9 @@ class BackendTest(TestCase):
         self.count = 3
 
     def test_live_query(self):
+        engine = ElasticsearchMultilingualSearchEngine()
+        es = engine.backend('default', **Data.connection_options)
+        es.setup()
         sqs = SearchQuerySet()
         self.assertFalse(sqs.query.has_run())
         self.assertIsInstance(sqs.query, ElasticsearchMultilingualSearchQuery)

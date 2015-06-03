@@ -179,8 +179,7 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
                 if not self.silently_fail:
                     raise
                 doc_id = get_identifier(obj_or_string)
-                self.log.error("Failed to remove document '%s' from Elasticsearch: %s",
-                                   doc_id, e)
+                self.log.error("Failed to remove document '%s' from Elasticsearch: %s", doc_id, e)
                 return
 
         for language in self.languages:
