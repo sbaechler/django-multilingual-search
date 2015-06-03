@@ -56,8 +56,8 @@ class BackendTest(TestCase):
                          {'id': 'testproject.document.1', 'doc_type': 'modelresult',
                          'ignore': 404, 'index': 'testproject-de'})
 
-    @mock.patch.object(RealtimeSignalProcessor, 'handle_save')
-    @mock.patch.object(RealtimeSignalProcessor, 'handle_delete')
+    @mock.patch.object(RealtimeSignalProcessor, 'handle_save', autospec=True)
+    @mock.patch.object(RealtimeSignalProcessor, 'handle_delete', autospec=True)
     def test_hook_called(self, mock_delete, mock_save, mock_es):
         # check if the signals are triggered
         rsp = RealtimeSignalProcessor(haystack.connections, haystack.connection_router)  # noqa

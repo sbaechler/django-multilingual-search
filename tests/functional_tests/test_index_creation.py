@@ -16,9 +16,17 @@ class IndexTest(TestCase):
     Tests the index creation functions against a real Elasitcsearch server.
     """
     fixtures = ['documents']
+    index_exists = False
 
     def setUp(self):
         self.count = 52
+
+    def tearDown(self):
+        if self.index_exists:
+            engine = ElasticsearchMultilingualSearchEngine()
+            es = engine.backend('default', **Data.connection_options)
+            es.clear(commit=True)
+            time.sleep(1)
 
     def test_fixture_and_elasticsearch_up(self):
         documents = Document.objects.all()
@@ -38,18 +46,18 @@ class IndexTest(TestCase):
         """
         engine = ElasticsearchMultilingualSearchEngine()
         es = engine.backend('default', **Data.connection_options)
-        es.clear(commit=True)
         # the indexes don't exist yet.
         for language in es.languages:
             index_name = es._index_name_for_language(language)
             self.assertFalse(es.conn.indices.exists(index_name))
 
         es.setup()
-
+        self.index_exists = True
         unified_index = engine.get_unified_index()
         index = unified_index.get_index(Document)
         iterable = Document.objects.all()
         es.update(index, iterable)
+        time.sleep(1)
         id = 'testproject.document.10'
         i = 0
         # use this document as a reference.
@@ -74,5 +82,3 @@ class IndexTest(TestCase):
             self.assertEqual(doc['_source']['docid'], reference.docid)
             with translation.override(language):
                 self.assertIn(escape(reference.text), doc['_source']['text'])
-
-        es.clear(commit=True)

@@ -29,12 +29,12 @@ setup(
     long_description=read('README.md'),
     platforms=['OS Independent'],
     # install_requires=[
-    #     'Django>=1.4',
+    #     'Django>=1.5',
     #     'haystack>=2.3.1',
     #     'elasticsearch=>1.5.0'
     # ],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'License :: OSI Approved :: BSD License',
         'Framework :: Django',
         'Intended Audience :: Developers',

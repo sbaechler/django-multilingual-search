@@ -100,7 +100,8 @@ HAYSTACK_CONNECTIONS = {
         'ENGINE': 'multilingual.elasticsearch.ElasticsearchMultilingualSearchEngine',
         'URL': 'http://127.0.0.1:9200/',
         'INDEX_NAME': 'testproject',
-        'SILENTLY_FAIL': False
+        'SILENTLY_FAIL': False,
+        'TIMEOUT': 30,
     },
 }
 

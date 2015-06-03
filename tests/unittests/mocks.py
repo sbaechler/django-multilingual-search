@@ -16,6 +16,7 @@ class Data:
         'URL': 'http://127.0.0.1:9200/',
         'INDEX_NAME': 'testproject',
         'SILENTLY_FAIL': False,
+        'TIMEOUT': 30,
     }
     existing_mapping = {'modelresult': {'_boost': {'null_value': 1.0, 'name': 'boost'},
                                         'properties': {'django_id': {'index': 'not_analyzed',

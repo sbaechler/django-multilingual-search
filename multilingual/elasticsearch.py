@@ -100,6 +100,7 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
         :param commit: This is ignored by Haystack (maybe a bug?)
         """
         for language in self.languages:
+            self.log.debug('clearing index for {0}'.format(language))
             self.index_name = self._index_name_for_language(language)
             super(ElasticsearchMultilingualSearchBackend, self).clear(models, commit)
         self._reset_existing_mapping()
@@ -124,6 +125,7 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
 
         for language in self.languages:
             self.index_name = self._index_name_for_language(language)
+            self.log.debug('updating index for {0}'.format(language))
             with translation.override(language):
                 super(ElasticsearchMultilingualSearchBackend, self).update(index, iterable, commit)
 
@@ -191,6 +193,7 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
                 return
 
         for language in self.languages:
+            self.log.debug('removing {0} from index {1}'.format(obj_or_string, language))
             self.index_name = self._index_name_for_language(language)
             with translation.override(language):
                 super(ElasticsearchMultilingualSearchBackend, self).remove(obj_or_string,

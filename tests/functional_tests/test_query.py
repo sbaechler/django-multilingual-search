@@ -20,6 +20,13 @@ class BackendTest(TestCase):
     def setUp(self):
         self.count = 3
 
+    def tearDown(self):
+        if self.index_exists:
+            engine = ElasticsearchMultilingualSearchEngine()
+            es = engine.backend('default', **Data.connection_options)
+            es.clear(commit=True)
+            time.sleep(1)
+
     def test_live_query(self):
         engine = ElasticsearchMultilingualSearchEngine()
         es = engine.backend('default', **Data.connection_options)
@@ -35,12 +42,13 @@ class BackendTest(TestCase):
         engine = ElasticsearchMultilingualSearchEngine()
         es = engine.backend('default', **Data.connection_options)
         es.setup()
+        # fill up the index
         self.index_exists = True
         unified_index = engine.get_unified_index()
         index = unified_index.get_index(Document)
         iterable = Document.objects.all()
         es.update(index, iterable)
-
+        time.sleep(1)
         id = 'testproject.document.2'
         i = 0
         # use this document as a reference.
@@ -71,8 +79,6 @@ class BackendTest(TestCase):
             sqs = SearchQuerySet()
             # result might be empty the first time this is called.
             result = sqs.filter(content='United States')
-            while len(result) == 0 and i < 5:
-                result = sqs.filter(content='United States')
             self.assertEqual(2, len(result))
             self.assertEqual('cyberpresse/2012/12/01/1564248', result[0].docid)
             self.assertEqual('cyberpresse/2012/12/01/1564741', result[1].docid)
@@ -86,8 +92,4 @@ class BackendTest(TestCase):
             self.assertEqual('cyberpresse/2012/12/01/1564741', result[0].docid)
             self.assertIn(escape(reference.text), result[0].text)
 
-    def tearDown(self):
-        if self.index_exists:
-            engine = ElasticsearchMultilingualSearchEngine()
-            es = engine.backend('default', **Data.connection_options)
-            es.clear(commit=True)
+
