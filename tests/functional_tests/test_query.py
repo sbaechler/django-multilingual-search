@@ -91,5 +91,3 @@ class BackendTest(TestCase):
             self.assertEqual(1, len(result))
             self.assertEqual('cyberpresse/2012/12/01/1564741', result[0].docid)
             self.assertIn(escape(reference.text), result[0].text)
-
-
