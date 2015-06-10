@@ -30,6 +30,11 @@ To use it, specify this engine in `settings.py`:
             'INDEX_NAME': 'myproject',
         },
     }
+    
+For automatic indexing of new entries the Haystack 
+[signal processors](http://django-haystack.readthedocs.org/en/latest/signal_processors.html) 
+can be used without modification.
+
 
 ## Contributing
 
