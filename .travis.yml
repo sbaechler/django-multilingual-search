@@ -16,7 +16,7 @@ matrix:
       env: DJANGO_REQUIREMENT="Django>=1.5,<1.6"
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
-  - pip install -q $DJANGO_REQUIREMENT elasticsearch django-haystack django-modeltranslation flake8 --use-mirrors
+  - pip install -q $DJANGO_REQUIREMENT elasticsearch django-haystack==2.3.1 django-modeltranslation flake8 --use-mirrors
   - python setup.py -q install
 # command to run tests, e.g. python setup.py test
 script:
