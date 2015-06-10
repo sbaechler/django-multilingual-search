@@ -1,13 +1,14 @@
 # coding: utf-8
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, unicode_literals, print_function
 from django.test import TestCase
 from django.utils import translation
 from django.utils.html import escape
+from django.db.models import signals
 import haystack
-from haystack.signals import RealtimeSignalProcessor
 import time
 from multilingual.elasticsearch import ElasticsearchMultilingualSearchEngine
 from testproject.models import Document
+from testproject.signals import DocumentOnlySignalProcessor
 from unittests.mocks import create_documents, Data
 
 try:
@@ -18,10 +19,15 @@ except ImportError:
 
 class HookTest(TestCase):
 
+    def setUp(self):
+        self.sp = DocumentOnlySignalProcessor(haystack.connections,
+                                              haystack.connection_router)
+
     def tearDown(self):
         engine = ElasticsearchMultilingualSearchEngine()
         es = engine.backend('default', **Data.connection_options)
         es.clear(commit=True)
+        self.sp.teardown()
         time.sleep(1)
 
     def test_hook_called(self):
@@ -29,14 +35,14 @@ class HookTest(TestCase):
         engine = ElasticsearchMultilingualSearchEngine()
         es = engine.backend('default', **Data.connection_options)
         es.clear(commit=True)
+        self.assertTrue(signals.post_save.has_listeners(sender=Document))
 
         unified_index = engine.get_unified_index()
         index = unified_index.get_index(Document)
         iterable = Document.objects.all()
         es.update(index, iterable)
         time.sleep(1)
-        rsp = RealtimeSignalProcessor(haystack.connections, haystack.connection_router)  # noqa
-        self.assertFalse(isinstance(rsp.handle_save, mock.Mock))
+
         self.assertTrue(es.conn.indices.exists('testproject-en'))
         count = es.conn.count(index='testproject-en')
         self.assertEqual(0, count['count'])
@@ -44,12 +50,15 @@ class HookTest(TestCase):
         # write a new entry in the database
         documents[0].save()
         reference = documents[0].object
+        self.assertIsNotNone(reference.id)
         id = 'testproject.document.1'
         time.sleep(0.5)
         for language in es.languages:
             index_name = es._index_name_for_language(language)
             self.assertTrue(es.conn.indices.exists(index_name))
             count = es.conn.count(index=index_name)
+            print(count)
+            # import pdb; pdb.set_trace()
             self.assertEqual(1, count['count'], 'Index %s contains the document' % index_name)
 
             self.assertTrue(es.conn.exists(index=index_name, id=id))

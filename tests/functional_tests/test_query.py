@@ -11,6 +11,11 @@ from multilingual.elasticsearch import ElasticsearchMultilingualSearchQuery, \
 from testproject.models import Document
 from unittests.mocks import Data
 
+try:
+    from unittest import mock  # python >= 3.3
+except ImportError:
+    import mock  # python 2
+
 
 class BackendTest(TestCase):
     fixtures = ['small']
@@ -77,6 +82,9 @@ class BackendTest(TestCase):
         with translation.override('en'):
             # test the search queryset
             sqs = SearchQuerySet()
+            # Django 1.5 doesn't clean up patches
+            self.assertFalse(isinstance(sqs.query.backend.conn, mock.Mock))
+
             # result might be empty the first time this is called.
             result = sqs.filter(content='United States')
             self.assertEqual(2, len(result))

@@ -173,7 +173,8 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
         :return: result_class instance
         """
         self.index_name = self._index_name_for_language(translation.get_language())
-        self.log.debug('search method called (%s)' % translation.get_language())
+        self.log.debug('search method called (%s): %s' %
+                       (translation.get_language(), query_string))
         return super(ElasticsearchMultilingualSearchBackend, self).search(query_string, **kwargs)
 
     def remove(self, obj_or_string, commit=True):
