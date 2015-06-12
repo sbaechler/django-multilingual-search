@@ -7,7 +7,7 @@ from django.utils.html import escape
 from haystack.backends.elasticsearch_backend import ElasticsearchSearchBackend, \
     ElasticsearchSearchEngine
 from haystack.management.commands.update_index import do_update
-from multilingual.elasticsearch import ElasticsearchMultilingualSearchBackend, \
+from multilingual.elasticsearch_backend import ElasticsearchMultilingualSearchBackend, \
     ElasticsearchMultilingualSearchEngine
 from .mocks import mock_indices, Data
 from testproject.models import Document
@@ -19,10 +19,10 @@ except ImportError:
     import mock  # python 2
 
 
-@mock.patch('elasticsearch.Elasticsearch')
 class BackendTest(SimpleTestCase):
     maxDiff = None
 
+    @mock.patch('elasticsearch.Elasticsearch')
     def test_mocking_works(self, mock_obj):
         # create a backend instance
         es = ElasticsearchMultilingualSearchBackend('default', **Data.connection_options)
@@ -41,6 +41,7 @@ class BackendTest(SimpleTestCase):
         indices.get_mapping.assert_any_call(index='testproject-de')
         indices.get_mapping.assert_any_call(index='testproject-ru')
 
+    @mock.patch('elasticsearch.Elasticsearch')
     def test_do_update(self, mock_obj):
         """
         Tests the update_index.do_update function
@@ -62,6 +63,7 @@ class BackendTest(SimpleTestCase):
         # kwargs
         # self.assertEqual(call_args_list[0][1], {'commit': False})  only Haystack >= 2.4
 
+    @mock.patch('elasticsearch.Elasticsearch')
     def test_setup_on_haystack_backend(self, mock_obj):
         """
         Tests the Setup method on the elasticsearch backend.
@@ -77,6 +79,7 @@ class BackendTest(SimpleTestCase):
                                                        doc_type='modelresult',
                                                        body=Data.existing_mapping)
 
+    @mock.patch('elasticsearch.Elasticsearch')
     def test_setup_on_multilingual_backend(self, mock_obj):
         """
         Tests the Setup method on the elasticsearch backend.
@@ -112,12 +115,14 @@ class BackendTest(SimpleTestCase):
                                                     doc_type='modelresult',
                                                     body=es.existing_mapping['fr'])
 
+    @mock.patch('elasticsearch.Elasticsearch')
     def test_haystack_clear(self, mock_obj):
         es = ElasticsearchSearchBackend('default', **Data.connection_options)
         es.setup()
         es.clear(commit=True)  # commit is ignored anyway
         es.conn.indices.delete.assert_called_with(index='testproject', ignore=404)
 
+    @mock.patch('elasticsearch.Elasticsearch')
     def test_multilingual_clear(self, mock_obj):
         es = ElasticsearchMultilingualSearchBackend('default', **Data.connection_options)
         es.setup()
@@ -128,15 +133,16 @@ class BackendTest(SimpleTestCase):
         es.conn.indices.delete.assert_any_call(index='testproject-ru', ignore=404)
 
 
-@mock.patch('elasticsearch.Elasticsearch')
+
 class IndexTest(TestCase):
     fixtures = ['small']
     maxDiff = None
 
-    def test_fixture(self, mock_obj):
+    def test_fixture(self):
         qs = Document.objects.all()
         self.assertEqual(3, len(qs))
 
+    @mock.patch('elasticsearch.Elasticsearch')
     def test_haystack_update(self, mock_obj):
         """
         Test the update method on the Haystack backend
@@ -163,6 +169,7 @@ class IndexTest(TestCase):
         self.assertIn('The announcement of the probable discovery of the Higgs boson',
                       call_args[5]['text'])
 
+    @mock.patch('elasticsearch.Elasticsearch')
     def test_multilingual_update(self, mock_obj):
         """
         Test the update method on the multilingual backend.

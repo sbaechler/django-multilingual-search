@@ -6,7 +6,7 @@ from django.utils.html import escape
 from django.db.models import signals
 import haystack
 import time
-from multilingual.elasticsearch import ElasticsearchMultilingualSearchEngine
+from multilingual.elasticsearch_backend import ElasticsearchMultilingualSearchEngine
 from testproject.models import Document
 from testproject.signals import DocumentOnlySignalProcessor
 from unittests.mocks import create_documents, Data
@@ -20,6 +20,13 @@ except ImportError:
 class HookTest(TestCase):
 
     def setUp(self):
+        import haystack
+        # haystack uses a global variable to store a reference to the backend.
+        # This might have been replaced by a Mock object
+        import haystack.utils.loading
+        from django.conf import settings
+        haystack.connections = haystack.utils.loading.ConnectionHandler(settings.HAYSTACK_CONNECTIONS)
+
         self.sp = DocumentOnlySignalProcessor(haystack.connections,
                                               haystack.connection_router)
 
@@ -53,14 +60,17 @@ class HookTest(TestCase):
         self.assertIsNotNone(reference.id)
         id = 'testproject.document.1'
         time.sleep(0.5)
+
+        self.assertFalse(isinstance(es.conn, mock.Mock))
+
         for language in es.languages:
             index_name = es._index_name_for_language(language)
             self.assertTrue(es.conn.indices.exists(index_name))
             count = es.conn.count(index=index_name)
             print(count)
-            # import pdb; pdb.set_trace()
-            self.assertEqual(1, count['count'], 'Index %s contains the document' % index_name)
 
+            import pdb; pdb.set_trace()
+            self.assertEqual(1, count['count'], 'Index %s contains the document' % index_name)
             self.assertTrue(es.conn.exists(index=index_name, id=id))
             doc = es.conn.get(index=index_name, id=id)
             self.assertTrue(doc['found'])

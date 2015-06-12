@@ -5,7 +5,7 @@ from django.utils import translation
 
 from haystack.backends.elasticsearch_backend import ElasticsearchSearchBackend
 from haystack.query import SearchQuerySet
-from multilingual.elasticsearch import ElasticsearchMultilingualSearchQuery, \
+from multilingual.elasticsearch_backend import ElasticsearchMultilingualSearchQuery, \
     ElasticsearchMultilingualSearchBackend
 from .mocks import Data, mock_backend
 
@@ -15,10 +15,10 @@ except ImportError:
     import mock  # python 2
 
 
-@mock.patch('elasticsearch.Elasticsearch')
 class BackendTest(SimpleTestCase):
     maxDiff = None
 
+    @mock.patch('elasticsearch.Elasticsearch')
     def test_query(self, mock_es):
         sqs = SearchQuerySet()
         self.assertFalse(sqs.query.has_run())
@@ -29,6 +29,7 @@ class BackendTest(SimpleTestCase):
         self.assertTrue(all_results.query.backend.search.called)
         self.assertEqual('*:*', all_results.query.backend.search.call_args[0][0])
 
+    @mock.patch('elasticsearch.Elasticsearch')
     def test_haystack_search(self, mock_es):
         es = ElasticsearchSearchBackend('default', **Data.connection_options)
         self.assertFalse(es.setup_complete)
@@ -36,6 +37,7 @@ class BackendTest(SimpleTestCase):
         es.search('*:*', end_offset=1)
         es.conn.search.assert_called_with(**Data.search_kwargs)
 
+    @mock.patch('elasticsearch.Elasticsearch')
     def test_multilingual_search(self, mock_es):
         es = ElasticsearchMultilingualSearchBackend('default', **Data.connection_options)
         es.setup()
@@ -46,6 +48,7 @@ class BackendTest(SimpleTestCase):
                 kwargs['index'] = es._index_name_for_language(language)
                 es.conn.search.assert_called_with(**kwargs)
 
+    @mock.patch('elasticsearch.Elasticsearch')
     def test_haystack_process_results(self, mock_es):
         es = ElasticsearchSearchBackend('default', **Data.connection_options)
         es.setup()
@@ -53,6 +56,7 @@ class BackendTest(SimpleTestCase):
         expected = {'hits': 0, 'spelling_suggestion': None, 'results': [], 'facets': {}}
         self.assertEqual(expected, results)
 
+    @mock.patch('elasticsearch.Elasticsearch')
     def test_multiligual_process_results(self, mock_es):
         es = ElasticsearchMultilingualSearchBackend('default', **Data.connection_options)
         es.setup()

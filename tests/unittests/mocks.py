@@ -11,13 +11,7 @@ except ImportError:
 
 
 class Data:
-    connection_options = {
-        'ENGINE': 'multilingual.elasticsearch.ElasticsearchMultilingualSearchEngine',
-        'URL': 'http://127.0.0.1:9200/',
-        'INDEX_NAME': 'testproject',
-        'SILENTLY_FAIL': False,
-        'TIMEOUT': 30,
-    }
+    connection_options = settings.HAYSTACK_CONNECTIONS['default']
     existing_mapping = {'modelresult': {'_boost': {'null_value': 1.0, 'name': 'boost'},
                                         'properties': {'django_id': {'index': 'not_analyzed',
                                                                      'include_in_all': False,

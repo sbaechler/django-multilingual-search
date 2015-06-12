@@ -4,5 +4,5 @@ README.md
 setup.cfg
 setup.py
 multilingual/__init__.py
-multilingual/elasticsearch.py
+multilingual/elasticsearch_backend.py
 multilingual/utils.py

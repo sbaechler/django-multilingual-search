@@ -15,10 +15,11 @@ except ImportError:
     import mock  # python 2
 
 
-@mock.patch('elasticsearch.Elasticsearch')
+
 class BackendTest(TestCase):
     maxDiff = None
 
+    @mock.patch('elasticsearch.Elasticsearch')
     def test_post_save_and_delete_hook(self, es_obj):
         # index uses a global loader for the backend.
         documents = create_documents()
@@ -56,6 +57,7 @@ class BackendTest(TestCase):
                          {'id': 'testproject.document.1', 'doc_type': 'modelresult',
                          'ignore': 404, 'index': 'testproject-de'})
 
+    @mock.patch('elasticsearch.Elasticsearch')
     @mock.patch.object(RealtimeSignalProcessor, 'handle_save', autospec=True)
     @mock.patch.object(RealtimeSignalProcessor, 'handle_delete', autospec=True)
     def test_hook_called(self, mock_delete, mock_save, mock_es):

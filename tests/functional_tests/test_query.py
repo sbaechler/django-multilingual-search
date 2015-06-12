@@ -6,8 +6,7 @@ from django.utils.html import escape
 
 from haystack.query import SearchQuerySet
 import time
-from multilingual.elasticsearch import ElasticsearchMultilingualSearchQuery, \
-    ElasticsearchMultilingualSearchEngine
+
 from testproject.models import Document
 from unittests.mocks import Data
 
@@ -16,6 +15,8 @@ try:
 except ImportError:
     import mock  # python 2
 
+from multilingual.elasticsearch_backend import ElasticsearchMultilingualSearchQuery, \
+    ElasticsearchMultilingualSearchEngine
 
 class BackendTest(TestCase):
     fixtures = ['small']
@@ -24,6 +25,16 @@ class BackendTest(TestCase):
 
     def setUp(self):
         self.count = 3
+        import haystack
+        # haystack uses a global variable to store a reference to the backend.
+        # This might have been replaced by a Mock object
+        backend = haystack.connections['default']._backend
+
+        if hasattr(backend, 'conn') and isinstance(backend.conn, mock.Mock):
+            import haystack.utils.loading
+            from django.conf import settings
+            haystack.connections = haystack.utils.loading.ConnectionHandler(settings.HAYSTACK_CONNECTIONS)
+
 
     def tearDown(self):
         if self.index_exists:
