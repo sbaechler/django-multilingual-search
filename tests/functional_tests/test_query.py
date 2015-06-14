@@ -26,15 +26,7 @@ class BackendTest(TestCase):
     def setUp(self):
         self.count = 3
         import haystack
-        # haystack uses a global variable to store a reference to the backend.
-        # This might have been replaced by a Mock object
-        backend = haystack.connections['default']._backend
-
-        if hasattr(backend, 'conn') and isinstance(backend.conn, mock.Mock):
-            import haystack.utils.loading
-            from django.conf import settings
-            haystack.connections = haystack.utils.loading.ConnectionHandler(settings.HAYSTACK_CONNECTIONS)
-
+        haystack.connections.reload('default')
 
     def tearDown(self):
         if self.index_exists:
@@ -95,9 +87,10 @@ class BackendTest(TestCase):
             sqs = SearchQuerySet()
             # Django 1.5 doesn't clean up patches
             self.assertFalse(isinstance(sqs.query.backend.conn, mock.Mock))
-
-            # result might be empty the first time this is called.
             result = sqs.filter(content='United States')
+            # result might be empty the first time this is called. (Django < 1.8)
+            if len(result) == 0:
+                result = sqs.filter(content='United States')
             self.assertEqual(2, len(result))
             self.assertEqual('cyberpresse/2012/12/01/1564248', result[0].docid)
             self.assertEqual('cyberpresse/2012/12/01/1564741', result[1].docid)

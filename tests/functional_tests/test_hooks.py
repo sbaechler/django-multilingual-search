@@ -20,12 +20,10 @@ except ImportError:
 class HookTest(TestCase):
 
     def setUp(self):
+        # Haystack stores the connection in a global variable. This has to be reset
+        # because otherwise the mock is still refrenced (Django < 1.8).
         import haystack
-        # haystack uses a global variable to store a reference to the backend.
-        # This might have been replaced by a Mock object
-        import haystack.utils.loading
-        from django.conf import settings
-        haystack.connections = haystack.utils.loading.ConnectionHandler(settings.HAYSTACK_CONNECTIONS)
+        haystack.connections.reload('default')
 
         self.sp = DocumentOnlySignalProcessor(haystack.connections,
                                               haystack.connection_router)
@@ -69,7 +67,6 @@ class HookTest(TestCase):
             count = es.conn.count(index=index_name)
             print(count)
 
-            import pdb; pdb.set_trace()
             self.assertEqual(1, count['count'], 'Index %s contains the document' % index_name)
             self.assertTrue(es.conn.exists(index=index_name, id=id))
             doc = es.conn.get(index=index_name, id=id)
