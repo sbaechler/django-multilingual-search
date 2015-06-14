@@ -30,7 +30,7 @@ setup(
     platforms=['OS Independent'],
     # install_requires=[
     #     'Django>=1.5',
-    #     'haystack>=2.3.1',
+    #     'haystack==2.3.1',
     #     'elasticsearch=>1.5.0'
     # ],
     classifiers=[

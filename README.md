@@ -15,7 +15,7 @@ Install with pip:
     pip install django-multilingual-search
     
 The major and minor versions of this project correspond to the Haystack version the package was
-tested against.
+tested against. This version is for Haystack 2.3.1.
     
     
 ## Configuration
