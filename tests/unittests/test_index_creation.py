@@ -133,7 +133,6 @@ class BackendTest(SimpleTestCase):
         es.conn.indices.delete.assert_any_call(index='testproject-ru', ignore=404)
 
 
-
 class IndexTest(TestCase):
     fixtures = ['small']
     maxDiff = None

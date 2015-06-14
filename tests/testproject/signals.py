@@ -4,6 +4,7 @@ from django.db import models
 from haystack import signals
 from .models import Document
 
+
 class DocumentOnlySignalProcessor(signals.BaseSignalProcessor):
     def setup(self):
         # Listen only to the ``Document`` model.

@@ -3,7 +3,7 @@ from __future__ import absolute_import, unicode_literals
 from django.test import TestCase
 from django.utils import translation
 from django.utils.html import escape
-
+import haystack
 from haystack.query import SearchQuerySet
 import time
 
@@ -18,6 +18,7 @@ except ImportError:
 from multilingual.elasticsearch_backend import ElasticsearchMultilingualSearchQuery, \
     ElasticsearchMultilingualSearchEngine
 
+
 class BackendTest(TestCase):
     fixtures = ['small']
     maxDiff = None
@@ -25,7 +26,6 @@ class BackendTest(TestCase):
 
     def setUp(self):
         self.count = 3
-        import haystack
         haystack.connections.reload('default')
 
     def tearDown(self):

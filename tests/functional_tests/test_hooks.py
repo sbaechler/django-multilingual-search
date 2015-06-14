@@ -21,8 +21,7 @@ class HookTest(TestCase):
 
     def setUp(self):
         # Haystack stores the connection in a global variable. This has to be reset
-        # because otherwise the mock is still refrenced (Django < 1.8).
-        import haystack
+        # because otherwise the mock is still refrenced (Django < 1.8).
         haystack.connections.reload('default')
 
         self.sp = DocumentOnlySignalProcessor(haystack.connections,

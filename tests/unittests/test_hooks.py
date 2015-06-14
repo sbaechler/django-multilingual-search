@@ -15,7 +15,6 @@ except ImportError:
     import mock  # python 2
 
 
-
 class BackendTest(TestCase):
     maxDiff = None
 
