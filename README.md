@@ -15,7 +15,7 @@ Install with pip:
     pip install django-multilingual-search
     
 The major and minor versions of this project correspond to the Haystack version the package was
-tested against. This version is for Haystack 2.3.1.
+tested against. This version is for Haystack 2.4.
     
     
 ## Configuration
@@ -33,7 +33,8 @@ To use it, specify this engine in `settings.py`:
     
 For automatic indexing of new entries the Haystack 
 [signal processors](http://django-haystack.readthedocs.org/en/latest/signal_processors.html) 
-can be used without modification.
+can be used without modification. It is recommended that a custom SignalProcessor be used
+instead of the `RealtimeSignalProcessor` because of server timeout issues with the latter.
 
 
 ## Contributing
@@ -44,3 +45,4 @@ Please read the [Contributing](./CONTRIBUTING.md) guide.
 ## Release History
 
 - 2.3.0: First release
+- 2.4.0: Update code for compatibility with Haystack 2.4
