@@ -34,7 +34,7 @@ class Data:
 
     index_keys = ['django_ct', 'id', 'text', 'docid', 'django_id', '_id']
 
-    search_kwargs = {'doc_type': 'modelresult', 'index': 'testproject',
+    search_kwargs = {'_source': True, 'doc_type': 'modelresult', 'index': 'testproject',
                      'body': {'query': {'filtered': {'query': {'match_all': {}},
                               'filter': {'terms': {'django_ct': ['testproject.document']}}}},
                               'from': 0, 'size': 1}}
