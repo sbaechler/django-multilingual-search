@@ -26,7 +26,7 @@ setup(
     author_email='sb@feinheit.ch',
     description='A drop-in replacement for the Haystack Elasticsearch backend which allows '
                 'multilingual indexes for Django.',
-    long_description=read('README.md'),
+    long_description=read('README.rst'),
     platforms=['OS Independent'],
     # install_requires=[
     #     'Django>=1.5',
@@ -41,7 +41,6 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Indexing/Search',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.2',
