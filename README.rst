@@ -30,7 +30,7 @@ To use it, specify this engine in ``settings.py``::
 
     HAYSTACK_CONNECTIONS = {
         'default': {
-            'ENGINE': 'multilingual.elasticsearch.ElasticsearchMultilingualSearchEngine',
+            'ENGINE': 'multilingual.elasticsearch_backend.ElasticsearchMultilingualSearchEngine',
             'URL': 'http://127.0.0.1:9200/',
             'INDEX_NAME': 'myproject',
         },
