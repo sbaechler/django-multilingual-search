@@ -5,7 +5,7 @@ from django.core.management import BaseCommand
 from django.utils import translation
 import os
 from glob import glob
-from testproject.models import Document
+from ...models import ParlerDocument, Document
 
 try:
     from HTMLParser import HTMLParser  # Python 2
@@ -96,8 +96,10 @@ class Command(BaseCommand):
             translation.activate(language)
             self.stdout.write('{0}: {1}'.format(file, language))
             with codecs.open(file, 'r', 'utf-8') as f:
-                parser = SGMLParser(Document, language)
+                modeltranslation_parser = SGMLParser(Document, language)
+                parler_parser = SGMLParser(ParlerDocument, language)
                 data = f.read()
-            parser.parse(data)
+            modeltranslation_parser.parse(data)
+            parler_parser.parse(data)
 
         self.stdout.write('Done.')

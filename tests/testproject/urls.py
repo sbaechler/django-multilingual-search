@@ -2,7 +2,7 @@ from django.conf.urls import include, url, patterns
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from haystack.views import search_view_factory
-from .views import DocumentView, Search, LanguageRedirectView
+from .views import DocumentView, Search, LanguageRedirectView, ParlerView
 
 search_view = search_view_factory(Search)
 
@@ -15,4 +15,5 @@ urlpatterns = patterns(
 
 urlpatterns += i18n_patterns(
     url(r'^$', DocumentView.as_view(), name='home'),
+    url(r'^parler/$', ParlerView.as_view(), name='parler_home'),
 )

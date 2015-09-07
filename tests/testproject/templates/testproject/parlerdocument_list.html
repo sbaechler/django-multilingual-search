@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>All Parler elements</h1>
+  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    {% for document in object_list %}
+    <div class="panel panel-default">
+      <div class="panel-heading" role="tab">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" data-parent="#accordion" href="#c{{ document.id }}">
+            {{ document.title }}
+          </a>
+        </h4>
+      </div>
+      <div id="c{{ document.id }}" class="panel-collapse collapse" role="tabpanel">
+        <div class="panel-body">
+          {{ document.text }}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+{% endblock %}

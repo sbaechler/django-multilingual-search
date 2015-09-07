@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.utils import translation
 import time
 from django.utils.html import escape
-from testproject.models import Document
+from testproject.models import Document, ParlerDocument
 from unittests.mocks import Data
 from multilingual.elasticsearch_backend import ElasticsearchMultilingualSearchBackend, \
     ElasticsearchMultilingualSearchEngine
@@ -15,7 +15,7 @@ class IndexTest(TestCase):
     """
     Tests the index creation functions against a real Elasitcsearch server.
     """
-    fixtures = ['documents']
+    fixtures = ['documents', 'parler_small']
     index_exists = False
 
     def setUp(self):
@@ -40,7 +40,7 @@ class IndexTest(TestCase):
         self.assertEqual('elasticsearch', info['cluster_name'])
         self.assertEqual(200, info['status'])
 
-    def test_multilingual_update(self):
+    def test_multilingual_modeltranslations_update(self):
         """
         Test the update method on the multilingual backend.
         """
@@ -69,6 +69,51 @@ class IndexTest(TestCase):
             self.assertTrue(es.conn.indices.exists(index_name))
             count = es.conn.count(index=index_name)
             self.assertEqual(self.count, count['count'])
+
+            # make sure the index has been created
+            while not es.conn.exists(index=index_name, id=id) and i < 5:
+                time.sleep(0.5)
+                i += 1
+            self.assertTrue(es.conn.exists(index=index_name, id=id))
+            # get the document with the above id from the correct index
+            doc = es.conn.get(index=index_name, id=id)
+            self.assertTrue(doc['found'])
+            self.assertEqual(doc['_type'], 'modelresult')
+            self.assertEqual(doc['_source']['docid'], reference.docid)
+            with translation.override(language):
+                self.assertIn(escape(reference.text), doc['_source']['text'])
+
+
+    def test_parler_modeltranslations_update(self):
+        """
+        Test the update method on the multiligual backend for parler models.
+        """
+        engine = ElasticsearchMultilingualSearchEngine()
+        es = engine.backend('default', **Data.connection_options)
+        # the indexes don't exist yet.
+        for language in es.languages:
+            index_name = es._index_name_for_language(language)
+            self.assertFalse(es.conn.indices.exists(index_name))
+
+        es.setup()
+        self.index_exists = True
+        unified_index = engine.get_unified_index()
+        index = unified_index.get_index(Document)
+        iterable = ParlerDocument.objects.prefetch_related('translations').all()
+        es.update(index, iterable)
+        time.sleep(1)
+        id = 'testproject.parlerdocument.1'
+        i = 0
+        # use this document as a reference.
+        reference = ParlerDocument.objects.get(id=1)
+
+        for language in es.languages:
+            # check all language indexes
+            index_name = es._index_name_for_language(language)
+            reference.set_current_language(language)
+            self.assertTrue(es.conn.indices.exists(index_name))
+            count = es.conn.count(index=index_name)
+            self.assertEqual(3, count['count'])
 
             # make sure the index has been created
             while not es.conn.exists(index=index_name, id=id) and i < 5:
