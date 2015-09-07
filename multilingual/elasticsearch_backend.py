@@ -134,10 +134,12 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
                 # workaround for django-parler
                 for item in iterable:
                     item.set_current_language(language)
-                super(ElasticsearchMultilingualSearchBackend, self).update(index, iterable, commit)
+                super(ElasticsearchMultilingualSearchBackend, self).update(
+                    index, iterable, commit)
             else:
                 with translation.override(language):
-                    super(ElasticsearchMultilingualSearchBackend, self).update(index, iterable, commit)
+                    super(ElasticsearchMultilingualSearchBackend, self).update(
+                        index, iterable, commit)
 
     def build_schema(self, fields, language):
         """

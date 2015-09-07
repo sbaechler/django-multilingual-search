@@ -37,8 +37,8 @@ class Data:
     search_kwargs = {'_source': True, 'doc_type': 'modelresult', 'index': 'testproject',
                      'body': {'query': {'filtered': {'query': {'match_all': {}},
                               'filter': {'terms': {'django_ct':
-                                                       ['testproject.parlerdocument',
-                                                        'testproject.document']}}}},
+                                                   ['testproject.parlerdocument',
+                                                    'testproject.document']}}}},
                               'from': 0, 'size': 1}}
 
     raw_results = {'timed_out': False,

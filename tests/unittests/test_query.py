@@ -23,7 +23,7 @@ class BackendTest(SimpleTestCase):
         try:
             search.assert_called_with(**Data.search_kwargs)
         except AssertionError:
-            Data.search_kwargs['body']['query']['filtered']['filter']['terms']['django_ct'].reverse()
+            Data.search_kwargs['body']['query']['filtered']['filter']['terms']['django_ct'].reverse()  # noqa
             search.assert_called_with(**Data.search_kwargs)
 
     @mock.patch('elasticsearch.Elasticsearch')

@@ -83,7 +83,6 @@ class IndexTest(TestCase):
             with translation.override(language):
                 self.assertIn(escape(reference.text), doc['_source']['text'])
 
-
     def test_parler_modeltranslations_update(self):
         """
         Test the update method on the multiligual backend for parler models.
