@@ -5,3 +5,4 @@ psycopg2
 ipdb
 django-haystack>=2.4.0, <2.5
 django-modeltranslation==0.9.1
+django-parler==1.5

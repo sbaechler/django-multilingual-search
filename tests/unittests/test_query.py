@@ -18,6 +18,14 @@ except ImportError:
 class BackendTest(SimpleTestCase):
     maxDiff = None
 
+    # django_ct list has a random order.
+    def assert_called_with_search_kwargs(self, search):
+        try:
+            search.assert_called_with(**Data.search_kwargs)
+        except AssertionError:
+            Data.search_kwargs['body']['query']['filtered']['filter']['terms']['django_ct'].reverse()
+            search.assert_called_with(**Data.search_kwargs)
+
     @mock.patch('elasticsearch.Elasticsearch')
     def test_query(self, mock_es):
         sqs = SearchQuerySet()
@@ -35,7 +43,8 @@ class BackendTest(SimpleTestCase):
         self.assertFalse(es.setup_complete)
         es.setup()
         es.search('*:*', end_offset=1)
-        es.conn.search.assert_called_with(**Data.search_kwargs)
+        # es.conn.search.assert_called_with(**Data.search_kwargs)
+        self.assert_called_with_search_kwargs(es.conn.search)
 
     @mock.patch('elasticsearch.Elasticsearch')
     def test_multilingual_search(self, mock_es):

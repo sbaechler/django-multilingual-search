@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'testproject',
     'haystack',
+    'parler',
 )
 
 MIDDLEWARE_CLASSES = (

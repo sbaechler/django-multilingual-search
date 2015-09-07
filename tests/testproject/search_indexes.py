@@ -2,7 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from haystack import indexes
-from .models import Document
+from .models import Document, ParlerDocument
 
 
 class DocumentIndex(indexes.SearchIndex, indexes.Indexable):
@@ -11,3 +11,11 @@ class DocumentIndex(indexes.SearchIndex, indexes.Indexable):
 
     def get_model(self):
         return Document
+
+
+class ParlerIndex(indexes.SearchIndex, indexes.Indexable):
+    text = indexes.CharField(document=True, use_template=True)
+    docid = indexes.CharField(model_attr='docid')
+
+    def get_model(self):
+        return ParlerDocument
