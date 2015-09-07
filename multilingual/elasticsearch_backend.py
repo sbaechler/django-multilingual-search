@@ -129,7 +129,7 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
 
         for language in self.languages:
             self.index_name = self._index_name_for_language(language)
-            self.log.debug('updating index for {0}'.format(language))
+            # self.log.debug('updating index for {0}'.format(language))
             if parler:
                 # workaround for django-parler
                 for item in iterable:
@@ -185,8 +185,8 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
         :return: result_class instance
         """
         self.index_name = self._index_name_for_language(translation.get_language())
-        self.log.debug('search method called (%s): %s' %
-                       (translation.get_language(), query_string))
+        # self.log.debug('search method called (%s): %s' %
+        #                (translation.get_language(), query_string))
         return super(ElasticsearchMultilingualSearchBackend, self).search(query_string, **kwargs)
 
     def remove(self, obj_or_string, commit=True):
@@ -206,7 +206,7 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
                 return
 
         for language in self.languages:
-            self.log.debug('removing {0} from index {1}'.format(obj_or_string, language))
+            # self.log.debug('removing {0} from index {1}'.format(obj_or_string, language))
             self.index_name = self._index_name_for_language(language)
             with translation.override(language):
                 super(ElasticsearchMultilingualSearchBackend, self).remove(obj_or_string,
