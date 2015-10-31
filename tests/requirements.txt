@@ -1,8 +1,8 @@
 Django>=1.5
-elasticsearch>=1.5.0,<1.7.0
+elasticsearch>=1.8.0,<2.0
 urllib3>=1.10.4
 psycopg2
 ipdb
-django-haystack>=2.4.0, <2.5
+django-haystack>=2.4.1, <2.5
 django-modeltranslation==0.9.1
 django-parler==1.5

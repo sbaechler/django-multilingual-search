@@ -13,7 +13,7 @@ env:
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
-  - pip install -q $DJANGO_REQUIREMENT "elasticsearch>=1.6.0,<1.7.0" "django-haystack==2.4.0" django-modeltranslation django-parler flake8 --use-mirrors
+  - pip install -q $DJANGO_REQUIREMENT "elasticsearch>=1.8.0,<2.0" "django-haystack==2.4.1" django-modeltranslation django-parler flake8 --use-mirrors
   - python setup.py -q install
 # command to run tests, e.g. python setup.py test
 script:
