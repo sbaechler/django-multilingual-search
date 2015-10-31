@@ -18,7 +18,7 @@ if os.path.abspath(__file__).split(os.path.sep)[1] == 'vagrant':
 
 setup(
     name='django-multilingual-search',
-    version='2.4.1.beta',
+    version='2.4.1.beta2',
     packages=['multilingual'],
     url='https://github.com/sbaechler/django-multilingual-search',
     license='BSD',
@@ -28,11 +28,11 @@ setup(
                 'multilingual indexes for Django.',
     long_description=read('README.rst'),
     platforms=['OS Independent'],
-    # install_requires=[
-    #     'Django>=1.5',
-    #     'haystack==2.3.1',
-    #     'elasticsearch=>1.5.0'
-    # ],
+    install_requires=[
+        'Django>=1.5',
+        'django-haystack==2.4.0',
+        'elasticsearch>=1.5.0,<1.7.0'
+    ],
     classifiers=[
         'Development Status :: 4 - Beta',
         'License :: OSI Approved :: BSD License',
