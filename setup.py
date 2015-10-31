@@ -28,11 +28,11 @@ setup(
                 'multilingual indexes for Django.',
     long_description=read('README.rst'),
     platforms=['OS Independent'],
-    # install_requires=[
-    #     'Django>=1.5',
-    #     'haystack==2.3.1',
-    #     'elasticsearch=>1.5.0'
-    # ],
+    install_requires=[
+        'Django>=1.5',
+        'haystack==2.4.0',
+        'elasticsearch=>1.5.0,<1.7.0'
+    ],
     classifiers=[
         'Development Status :: 4 - Beta',
         'License :: OSI Approved :: BSD License',
