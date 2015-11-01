@@ -18,7 +18,7 @@ if os.path.abspath(__file__).split(os.path.sep)[1] == 'vagrant':
 
 setup(
     name='django-multilingual-search',
-    version='2.4.2.alpha1',
+    version='2.4.2.beta1',
     packages=['multilingual'],
     url='https://github.com/sbaechler/django-multilingual-search',
     license='BSD',
