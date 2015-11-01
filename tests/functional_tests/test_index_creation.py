@@ -25,7 +25,7 @@ class IndexTest(TestCase):
         if self.index_exists:
             engine = ElasticsearchMultilingualSearchEngine()
             es = engine.backend('default', **Data.connection_options)
-            es.clear(commit=True)
+            es.clear(models=None, commit=True)
             time.sleep(1)
 
     def test_fixture_and_elasticsearch_up(self):
@@ -71,10 +71,10 @@ class IndexTest(TestCase):
             self.assertEqual(self.count, count['count'])
 
             # make sure the index has been created
-            while not es.conn.exists(index=index_name, id=id) and i < 5:
+            while not es.conn.exists(index=index_name, doc_type='_all', id=id) and i < 5:
                 time.sleep(0.5)
                 i += 1
-            self.assertTrue(es.conn.exists(index=index_name, id=id))
+            self.assertTrue(es.conn.exists(index=index_name, doc_type='_all', id=id))
             # get the document with the above id from the correct index
             doc = es.conn.get(index=index_name, id=id)
             self.assertTrue(doc['found'])
@@ -115,10 +115,10 @@ class IndexTest(TestCase):
             self.assertEqual(3, count['count'])
 
             # make sure the index has been created
-            while not es.conn.exists(index=index_name, id=id) and i < 5:
+            while not es.conn.exists(index=index_name, doc_type='_all', id=id) and i < 5:
                 time.sleep(0.5)
                 i += 1
-            self.assertTrue(es.conn.exists(index=index_name, id=id))
+            self.assertTrue(es.conn.exists(index=index_name, doc_type='_all', id=id))
             # get the document with the above id from the correct index
             doc = es.conn.get(index=index_name, id=id)
             self.assertTrue(doc['found'])

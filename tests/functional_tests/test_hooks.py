@@ -30,7 +30,7 @@ class HookTest(TestCase):
     def tearDown(self):
         engine = ElasticsearchMultilingualSearchEngine()
         es = engine.backend('default', **Data.connection_options)
-        es.clear(commit=True)
+        es.clear(models=None, commit=True)
         self.sp.teardown()
         time.sleep(1)
 
@@ -38,7 +38,7 @@ class HookTest(TestCase):
         documents = create_documents()
         engine = ElasticsearchMultilingualSearchEngine()
         es = engine.backend('default', **Data.connection_options)
-        es.clear(commit=True)
+        es.clear(models=None, commit=True)
         self.assertTrue(signals.post_save.has_listeners(sender=Document))
 
         unified_index = engine.get_unified_index()
@@ -67,7 +67,7 @@ class HookTest(TestCase):
             print(count)
 
             self.assertEqual(1, count['count'], 'Index %s contains the document' % index_name)
-            self.assertTrue(es.conn.exists(index=index_name, id=id))
+            self.assertTrue(es.conn.exists(index=index_name, doc_type='_all', id=id))
             doc = es.conn.get(index=index_name, id=id)
             self.assertTrue(doc['found'])
             self.assertEqual(doc['_type'], 'modelresult')

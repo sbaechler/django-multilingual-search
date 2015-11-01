@@ -51,6 +51,7 @@ Please read the `Contributing <./CONTRIBUTING.md>`_ guide.
 Release History
 ---------------
 
+- 2.4.2: Support Haystack 2.4.1
 - 2.4.1: Add compatibility with Django-parler.
 - 2.4.0: Update code for compatibility with Haystack 2.4
 - 2.3.0: First release

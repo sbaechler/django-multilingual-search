@@ -119,14 +119,14 @@ class BackendTest(SimpleTestCase):
     def test_haystack_clear(self, mock_obj):
         es = ElasticsearchSearchBackend('default', **Data.connection_options)
         es.setup()
-        es.clear(commit=True)  # commit is ignored anyway
+        es.clear(models=None, commit=True)  # commit is ignored anyway
         es.conn.indices.delete.assert_called_with(index='testproject', ignore=404)
 
     @mock.patch('elasticsearch.Elasticsearch')
     def test_multilingual_clear(self, mock_obj):
         es = ElasticsearchMultilingualSearchBackend('default', **Data.connection_options)
         es.setup()
-        es.clear(commit=False)
+        es.clear(models=None, commit=False)
         es.conn.indices.delete.assert_any_call(index='testproject-en', ignore=404)
         es.conn.indices.delete.assert_any_call(index='testproject-fr', ignore=404)
         es.conn.indices.delete.assert_any_call(index='testproject-de', ignore=404)
