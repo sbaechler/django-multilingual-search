@@ -31,7 +31,7 @@ setup(
     install_requires=[
         'Django>=1.5',
         'django-haystack==2.4.1',
-        'elasticsearch>=1.8.0,<2'
+        'elasticsearch>=1.6.0,<1.8'
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
