@@ -93,7 +93,7 @@ class ElasticsearchMultilingualSearchBackend(ElasticsearchSearchBackend):
 
         self.setup_complete = True
 
-    def clear(self, models=[], commit=True):
+    def clear(self, models=None, commit=True):
         """
         Clears all indexes for the current project.
         :param models: if specified, only deletes the entries for the given models.
