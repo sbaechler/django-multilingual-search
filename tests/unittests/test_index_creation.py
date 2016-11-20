@@ -1,6 +1,6 @@
 # coding: utf-8
 from __future__ import absolute_import, unicode_literals
-from django.test import SimpleTestCase, TestCase
+from django.test import TestCase
 from django.conf import settings
 from django.utils import translation
 from django.utils.html import escape
@@ -19,7 +19,7 @@ except ImportError:
     import mock  # python 2
 
 
-class BackendTest(SimpleTestCase):
+class BackendTest(TestCase):
     maxDiff = None
 
     @mock.patch('elasticsearch.Elasticsearch')

@@ -9,4 +9,5 @@ from .models import Document
 class DocumentTranslationOptions(TranslationOptions):
     fields = ('title', 'text')
 
+
 translator.register(Document, DocumentTranslationOptions)

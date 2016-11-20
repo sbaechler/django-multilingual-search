@@ -6,6 +6,7 @@ import os
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+
 # Hard linking doesn't work inside VirtualBox shared folders. This means that
 # you can't use tox in a directory that is being shared with Vagrant,
 # since tox relies on `python setup.py sdist` which uses hard links. As a
@@ -18,12 +19,12 @@ if os.path.abspath(__file__).split(os.path.sep)[1] == 'vagrant':
 
 setup(
     name='django-multilingual-search',
-    version='2.4.2.beta1',
+    version='2.4.1',
     packages=['multilingual'],
     url='https://github.com/sbaechler/django-multilingual-search',
     license='BSD',
     author='Simon Bächler',
-    author_email='sb@feinheit.ch',
+    author_email='b@chler.com',
     description='A drop-in replacement for the Haystack Elasticsearch backend which allows '
                 'multilingual indexes for Django.',
     long_description=read('README.rst'),
@@ -34,7 +35,7 @@ setup(
         'elasticsearch>=1.6.0,<1.8'
     ],
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: BSD License',
         'Framework :: Django',
         'Intended Audience :: Developers',
