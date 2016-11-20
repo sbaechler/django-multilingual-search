@@ -1,5 +1,5 @@
-Django>=1.5
-elasticsearch>=1.8.0,<2.0
+Django>=1.5,<1.10
+elasticsearch==1.7.0
 urllib3>=1.10.4
 psycopg2
 ipdb

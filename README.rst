@@ -10,18 +10,20 @@ A query is routed to the index of the currently active language.
 
 .. image:: https://travis-ci.org/sbaechler/django-multilingual-search.svg?branch=master
     :target: https://travis-ci.org/sbaechler/django-multilingual-search
-    
+
+Currently, support for Django 1.10 is not guaranteed.
+
 Installation
 ------------
 
 Install with pip::
 
     pip install django-multilingual-search
-    
+
 The major and minor versions of this project correspond to the Haystack version the package was
 tested against. This version is for Haystack 2.4.
-    
-    
+
+
 Configuration
 -------------
 
@@ -35,8 +37,8 @@ To use it, specify this engine in ``settings.py``::
             'INDEX_NAME': 'myproject',
         },
     }
-    
-For automatic indexing of new entries the Haystack 
+
+For automatic indexing of new entries the Haystack
 `signal processors <http://django-haystack.readthedocs.org/en/latest/signal_processors.html>`_
 can be used without modification. It is recommended that a custom SignalProcessor be used
 instead of the ``RealtimeSignalProcessor`` because of server timeout issues with the latter.
@@ -44,8 +46,9 @@ instead of the ``RealtimeSignalProcessor`` because of server timeout issues with
 
 Contributing
 ------------
+Please read the `Contributing <./CONTRIBUTING.md>`_ guide. Any help is greatly appreciated.
 
-Please read the `Contributing <./CONTRIBUTING.md>`_ guide.
+My current company is not using Python, so I won't be able to maintain and keep this library updated.
 
 
 Release History
