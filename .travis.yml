@@ -1,22 +1,27 @@
 language: python
+
+dist: trusty
+
 sudo: false
-python:
-  - "2.7"
-  - "3.4"
+
+matrix:
+  include:
+    env: ELASTICVERSION=1.7
+    addons:
+      apt:
+        sources:
+          - elasticsearch-$ELASTICVERSION
+        packages:
+          - elasticsearch
+
 services:
-- elasticsearch
+  - elasticsearch
+
+install:
+  - pip install -U pip tox
+
 before_script:
   - sleep 10
-env:
-  - DJANGO_REQUIREMENT="Django>=1.6,<1.7"
-  - DJANGO_REQUIREMENT="Django>=1.9,<1.10"
 
-# command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
-install:
-  - pip install -q $DJANGO_REQUIREMENT "elasticsearch==1.7.0" "django-haystack==2.4.1" django-modeltranslation django-parler flake8
-  - python setup.py -q install
-# command to run tests, e.g. python setup.py test
 script:
-  - flake8
-  - cd tests
-  - ./manage.py test tests
+  - cd tests && tox
