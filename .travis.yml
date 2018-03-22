@@ -1,10 +1,8 @@
 language: python
 
+dist: trusty
+
 sudo: false
-
-
-services:
-  - elasticsearch
 
 matrix:
   include:
@@ -15,6 +13,9 @@ matrix:
           - elasticsearch-$ELASTICVERSION
         packages:
           - elasticsearch
+
+services:
+  - elasticsearch
 
 install:
   - pip install -U pip tox
