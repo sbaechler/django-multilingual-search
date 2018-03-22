@@ -1,7 +1,7 @@
 Contributing
 ============
 
-Feel free to contribute to the project. It is hosted on 
+Feel free to contribute to the project. It is hosted on
 [Github](https://github.com/sbaechler/django-multilingual-search).
 Clone the repository and open a pull request.
 
@@ -14,16 +14,16 @@ To work with the box simply run:
 
     vagrant up
     vagrant ssh
-    
+
 create a virtualenv and install the requirements in `tests/testproject/requirements.txt`.
-    
+
 You can access a WebGUI for elasticsearch here: http://localhost:9200/_plugin/head/
 
 
 # Testing
 The plugin uses Tox for testing under different Python versions.
 
-To manually run the tests, activate a virtual env, go to the directory /vagrant/tests 
+To manually run the tests, activate a virtual env, go to the directory /vagrant/tests
 and run ``./testproject/manage.py test``.
 
 
@@ -48,4 +48,4 @@ The ACL WMT 2013 test set is included as Django-fixture.
 PEP-8 with a line length of 100.
 
 If you have the [Editorconfig Plugin](http://editorconfig.org/) installed, your IDE is
-automatically going to enforce the correct style. 
+automatically going to enforce the correct style.
