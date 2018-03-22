@@ -6,3 +6,4 @@ ipdb
 django-haystack>=2.4.1, <2.5
 django-modeltranslation==0.12.2
 django-parler==1.9.2
+mock==2.0.0
