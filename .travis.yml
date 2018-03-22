@@ -2,9 +2,19 @@ language: python
 
 sudo: false
 
+
+services:
+  - elasticsearch
+
 matrix:
   include:
-    env: ELASTICVERSION=1.7.3
+    env: ELASTICVERSION=1.7
+    addons:
+      apt:
+        sources:
+          - elasticsearch-$ELASTICVERSION
+        packages:
+          - elasticsearch
 
 install:
   - pip install -U pip tox
