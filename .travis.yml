@@ -18,7 +18,6 @@ matrix:
 
 install:
   - pip install -U pip tox
-  - curl -O https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/deb/elasticsearch/$ELASTICVERSION/elasticsearch-$ELASTICVERSION.deb && sudo dpkg -i --force-confnew elasticsearch-$ELASTICVERSION.deb && sudo service elasticsearch restart
 
 before_script:
   - sleep 10
