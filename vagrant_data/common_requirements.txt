@@ -1,5 +1,5 @@
 Django==1.7.2
 django-devserver==0.8.0
-Pillow==2.7.0
+Pillow==8.1.1
 gunicorn==19.1.1
 fabric==1.10.0
